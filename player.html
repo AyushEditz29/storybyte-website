@@ -1,46 +1,122 @@
+```html
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Player - StoryByte</title>
-<link rel="stylesheet" href="css/style.css">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>StoryByte Player</title>
+
+<link rel="stylesheet"
+href="css/style.css">
+
+<link rel="stylesheet"
+href="https://cdn.plyr.io/3.7.8/plyr.css">
+
 </head>
 
 <body>
 
 <nav>
+
 <div class="logo">
-STORY<span>BYTE</span>
-</div>
-</nav>
 
-<section class="hero">
-
-<h1>Episode 1</h1>
-
-<div style="
-width:80%;
-height:400px;
-background:#1a1a1a;
-margin:auto;
-border-radius:12px;
-display:flex;
-justify-content:center;
-align-items:center;
-">
-
-VIDEO PLAYER
+<img
+src="images/storybyte-logo.png.png"
+alt="StoryByte">
 
 </div>
 
-<br>
+<a href="index.html">
 
 <button class="app-btn">
-Download Episode
+
+Home
+
+</button>
+
+</a>
+
+</nav>
+
+
+<section class="player-section">
+
+<h1>
+
+KINGMAKER KI QUEEN
+
+</h1>
+
+<div class="video-wrapper">
+
+<video
+
+id="player"
+
+controls
+
+playsinline
+
+poster="images/poster.jpg">
+
+</video>
+
+</div>
+
+</section>
+
+
+<section class="video-actions">
+
+<button class="action-btn">
+
+⬇ Download
+
+</button>
+
+<button class="action-btn">
+
+❤️ Favorite
+
+</button>
+
+<button class="action-btn">
+
+🔗 Share
+
 </button>
 
 </section>
 
+
+<section class="story-box">
+
+<h2>
+
+Story
+
+</h2>
+
+<p>
+
+A revenge drama where power, betrayal and destiny collide together.
+
+</p>
+
+</section>
+
+
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+<script src="js/player.js"></script>
+
 </body>
+
 </html>
+```
