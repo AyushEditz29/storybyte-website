@@ -1,5 +1,4 @@
 ```javascript
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
@@ -16,14 +15,21 @@ addDoc
 // Firebase Config
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
-  authDomain: "storybyteappin.firebaseapp.com",
-  projectId: "storybyteappin",
-  storageBucket: "storybyteappin.firebasestorage.app",
-  messagingSenderId: "113135240391",
-  appId: "1:113135240391:web:53586b59385268dfefeae2"
-};
 
+apiKey: "AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
+
+authDomain: "storybyteappin.firebaseapp.com",
+
+projectId: "storybyteappin",
+
+storageBucket: "storybyteappin.firebasestorage.app",
+
+messagingSenderId: "113135240391",
+
+appId: "1:113135240391:web:53586b59385268dfefeae2"
+
+};
+```
 
 const app = initializeApp(firebaseConfig);
 
@@ -132,8 +138,4 @@ console.log(error);
 
 }
 
-<input type="checkbox" id="trending">
-
-<input type="checkbox" id="latest">
-
-`;
+});
