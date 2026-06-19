@@ -6,26 +6,55 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>StoryByte Admin</title>
 
-<link rel="stylesheet"
-href="css/admin.css">
+<link rel="stylesheet" href="css/admin.css">
 
 </head>
 
 <body>
 
-<div class="admin-box">
+<!-- LOGIN -->
 
-<h1>
+<div id="loginBox" class="admin-box">
 
-StoryByte Admin
+<h1>Admin Login</h1>
 
-</h1>
+<input
 
+id="email"
+
+type="email"
+
+placeholder="Email"
+
+>
+
+<input
+
+id="password"
+
+type="password"
+
+placeholder="Password"
+
+>
+
+<button id="loginBtn">
+
+Login
+
+</button>
+
+</div>
+
+<!-- ADMIN PANEL -->
+
+<div id="adminPanel" class="admin-box">
+
+<h1>StoryByte Admin</h1>
 
 <input
 
@@ -33,13 +62,11 @@ id="title"
 
 placeholder="Drama Name">
 
-
 <input
 
 id="category"
 
 placeholder="Category">
-
 
 <input
 
@@ -47,20 +74,17 @@ id="poster"
 
 placeholder="Poster URL">
 
-
 <input
 
 id="banner"
 
 placeholder="Banner URL">
 
-
 <input
 
 id="video"
 
 placeholder="Video URL">
-
 
 <textarea
 
@@ -69,7 +93,6 @@ id="description"
 placeholder="Description">
 
 </textarea>
-
 
 <label>
 
@@ -83,7 +106,6 @@ Trending
 
 </label>
 
-
 <label>
 
 <input
@@ -95,7 +117,6 @@ id="latest">
 Latest Upload
 
 </label>
-
 
 <button id="publishBtn">
 

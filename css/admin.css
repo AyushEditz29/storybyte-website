@@ -65,3 +65,29 @@ font-size:18px;
 cursor:pointer;
 
 }
+
+/* LOGIN SYSTEM */
+
+#adminPanel{
+
+display:none;
+
+}
+
+#loginBox{
+
+display:block;
+
+}
+
+#loginBox h1{
+
+margin-bottom:25px;
+
+}
+
+#adminPanel h1{
+
+margin-bottom:25px;
+
+}
