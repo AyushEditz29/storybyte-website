@@ -319,8 +319,19 @@ height:260px;
 }
 
 .card img{
-height:200px;
+
+width:100%;
+
+aspect-ratio:2/3;
+
+height:auto;
+
+object-fit:cover;
+
+display:block;
+
 }
+
 
 .categories button{
 width:100%;
@@ -1214,9 +1225,8 @@ display:none;
 
 }
 
-/********************************
-HERO BANNER
-********************************/
+
+/* ===== FINAL MOBILE FIX ===== */
 
 .hero-slider{
 
@@ -1232,7 +1242,7 @@ margin:35px auto;
 
 width:100%;
 
-height:500px;
+aspect-ratio:1920/700;
 
 object-fit:cover;
 
@@ -1244,19 +1254,65 @@ cursor:pointer;
 
 }
 
-/* MOBILE */
-
 @media(max-width:768px){
 
-.hero-slider{
+/* Trending */
 
-width:95%;
+.trending-cards{
+
+display:flex !important;
+
+overflow-x:auto;
+
+gap:15px;
+
+padding-bottom:10px;
+
+scrollbar-width:none;
 
 }
 
+.trending-cards::-webkit-scrollbar{
+
+display:none;
+
+}
+
+.trending-cards .card{
+
+flex:0 0 180px;
+
+}
+
+/* Latest + Related */
+
+.cards:not(.trending-cards){
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:14px;
+
+}
+
+/* Posters */
+
+.card img{
+
+width:100%;
+
+aspect-ratio:2/3;
+
+object-fit:cover;
+
+}
+
+/* Banner */
+
 .hero-slider img{
 
-height:220px;
+aspect-ratio:1920/700;
 
 border-radius:18px;
 
