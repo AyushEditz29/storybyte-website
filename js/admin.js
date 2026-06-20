@@ -1,5 +1,8 @@
-```javascript
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 
@@ -9,78 +12,183 @@ collection,
 
 addDoc
 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+
+getAuth,
+
+signInWithEmailAndPassword
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 // Firebase Config
 
-const firebaseConfig = {
+const firebaseConfig={
 
-apiKey: "AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
+apiKey:"AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
 
-authDomain: "storybyteappin.firebaseapp.com",
+authDomain:"storybyteappin.firebaseapp.com",
 
-projectId: "storybyteappin",
+projectId:"storybyteappin",
 
-storageBucket: "storybyteappin.firebasestorage.app",
+storageBucket:"storybyteappin.firebasestorage.app",
 
-messagingSenderId: "113135240391",
+messagingSenderId:"113135240391",
 
-appId: "1:113135240391:web:53586b59385268dfefeae2"
+appId:"1:113135240391:web:53586b59385268dfefeae2"
 
 };
-```
 
-const app = initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+const app=initializeApp(firebaseConfig);
 
+const db=getFirestore(app);
+
+const auth=getAuth(app);
+
+
+// LOGIN
+
+document
+
+.getElementById("loginBtn")
+
+.addEventListener("click",async()=>{
+
+const email=
+
+document
+
+.getElementById("email")
+
+.value;
+
+const password=
+
+document
+
+.getElementById("password")
+
+.value;
+
+try{
+
+await signInWithEmailAndPassword(
+
+auth,
+
+email,
+
+password
+
+);
+
+document
+
+.getElementById("loginBox")
+
+.style.display="none";
+
+document
+
+.getElementById("adminPanel")
+
+.style.display="block";
+
+}
+
+catch(error){
+
+alert("Wrong Login ❌");
+
+console.log(error);
+
+}
+
+});
+
+
+// PUBLISH
 
 document
 
 .getElementById("publishBtn")
 
-.addEventListener("click", async()=>{
-
+.addEventListener("click",async()=>{
 
 const title=
 
-document.getElementById("title").value;
+document
 
+.getElementById("title")
+
+.value;
 
 const category=
 
-document.getElementById("category").value;
+document
 
+.getElementById("category")
+
+.value;
 
 const poster=
 
-document.getElementById("poster").value;
+document
 
+.getElementById("poster")
+
+.value;
 
 const banner=
 
-document.getElementById("banner").value;
+document
 
+.getElementById("banner")
+
+.value;
 
 const video=
 
-document.getElementById("video").value;
+document
 
+.getElementById("video")
+
+.value;
 
 const description=
 
-document.getElementById("description").value;
+document
 
+.getElementById("description")
+
+.value;
 
 const trending=
 
-document.getElementById("trending").checked;
+document
 
+.getElementById("trending")
+
+.checked;
 
 const latest=
 
-document.getElementById("latest").checked;
+document
+
+.getElementById("latest")
+
+.checked;
 
 
 if(!title){
@@ -91,9 +199,7 @@ return;
 
 }
 
-
 try{
-
 
 await addDoc(
 
@@ -124,7 +230,6 @@ createdAt:Date.now()
 }
 
 );
-
 
 alert("Drama Published ✅");
 
