@@ -151,3 +151,23 @@ display:none;
 display:none;
 
 }
+
+/* HIDE PANELS */
+
+#uploadPanel{
+
+display:none;
+
+}
+
+#adminPanel{
+
+display:none;
+
+}
+
+#loginBox{
+
+display:block;
+
+}

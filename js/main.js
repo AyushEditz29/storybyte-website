@@ -41,74 +41,168 @@ card.style.display="none";
 
 // =======================
 
-const viewAllBtn = document.getElementById("viewAllBtn");
 
-const extraStories = document.getElementById("extraStories");
+const viewAllBtn =
 
-if(viewAllBtn && extraStories){
+document.getElementById("viewAllBtn");
+
+const allCards =
+
+document.getElementById("allCards");
+
+if(viewAllBtn && allCards){
 
 viewAllBtn.addEventListener("click",()=>{
 
-extraStories.classList.toggle("hidden");
+allCards.classList.toggle("hidden");
 
-if(extraStories.classList.contains("hidden")){
+if(
 
-viewAllBtn.innerText="View All Dramas →";
+allCards.classList.contains("hidden")
+
+){
+
+viewAllBtn.innerText=
+
+"View All Dramas →";
 
 }
 
 else{
 
-viewAllBtn.innerText="Show Less ↑";
+viewAllBtn.innerText=
+
+"Show Less ↑";
 
 }
 
 });
 
 }
-const banners=[
 
-{
+import { initializeApp }
 
-img:"images/banner1.jpg",
+from
 
-link:"waqt-ka-karz.html"
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-},
+import {
 
-{
+getFirestore,
 
-img:"images/banner2.jpg",
+collection,
 
-link:"king-ki-queen.html"
+getDocs,
 
-},
+query,
 
-{
+orderBy,
 
-img:"images/banner3.jpg",
-
-link:"drama.html"
-
-},
-
-{
-
-img:"images/banner4.jpg",
-
-link:"drama.html"
+limit
 
 }
 
-];
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
+
+authDomain:"storybyteappin.firebaseapp.com",
+
+projectId:"storybyteappin",
+
+storageBucket:"storybyteappin.firebasestorage.app",
+
+messagingSenderId:"113135240391",
+
+appId:"1:113135240391:web:53586b59385268dfefeae2"
+
+};
+
+
+const app=
+
+initializeApp(firebaseConfig);
+
+const db=
+
+getFirestore(app);
+
+
+// =====================
+
+// BANNERS
+
+// =====================
+
+async function loadBanner(){
+
+const q=
+
+query(
+
+collection(db,"dramas"),
+
+orderBy("createdAt","desc"),
+
+limit(4)
+
+);
+
+const snap=
+
+await getDocs(q);
+
+const banners=[];
+
+
+snap.forEach(doc=>{
+
+const data=
+
+doc.data();
+
+if(data.showBanner){
+
+banners.push(data);
+
+}
+
+});
+
+
+if(!banners.length){
+
+return;
+
+}
+
 
 let current=0;
 
-const heroBanner=document.getElementById("heroBanner");
+const heroBanner=
 
-const bannerLink=document.getElementById("bannerLink");
+document.getElementById("heroBanner");
 
-if(heroBanner){
+const bannerLink=
+
+document.getElementById("bannerLink");
+
+
+heroBanner.src=
+
+banners[0].banner;
+
+bannerLink.href=
+
+"drama.html?id="+
+
+banners[0].title;
+
 
 setInterval(()=>{
 
@@ -120,10 +214,20 @@ current=0;
 
 }
 
-heroBanner.src=banners[current].img;
 
-bannerLink.href=banners[current].link;
+heroBanner.src=
+
+banners[current].banner;
+
+
+bannerLink.href=
+
+"drama.html?id="+
+
+banners[current].title;
 
 },5000);
 
 }
+
+loadBanner();
