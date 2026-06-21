@@ -1,3 +1,5 @@
+let uploadedVideoUrl = "";
+
 import { initializeApp }
 
 from
@@ -96,14 +98,15 @@ password
 document
 
 .getElementById("loginBox")
-
 .style.display="none";
 
 document
-
-.getElementById("adminPanel")
-
+.getElementById("uploadPanel")
 .style.display="block";
+
+document
+.getElementById("adminPanel")
+.style.display="none";
 
 }
 
@@ -174,19 +177,11 @@ document
 
 .value;
 
-const trending=
+const showBanner=
 
 document
 
-.getElementById("trending")
-
-.checked;
-
-const latest=
-
-document
-
-.getElementById("latest")
+.getElementById("showBanner")
 
 .checked;
 
@@ -207,6 +202,7 @@ collection(db,"dramas"),
 
 {
 
+
 title,
 
 category,
@@ -219,11 +215,10 @@ video,
 
 description,
 
-trending,
-
-latest,
+showBanner,
 
 views:0,
+
 
 createdAt:Date.now()
 
@@ -244,3 +239,192 @@ console.log(error);
 }
 
 });
+
+document
+.getElementById("nextBtn")
+.addEventListener("click",()=>{
+
+if(!uploadedVideoUrl){
+
+alert("Upload video first ❌");
+
+return;
+
+}
+
+document
+.getElementById("uploadPanel")
+.style.display="none";
+
+document
+.getElementById("adminPanel")
+.style.display="block";
+
+});
+
+
+// ======================
+// STREAMTAPE UPLOAD
+// ======================
+
+document
+.getElementById("uploadBtn")
+.addEventListener("click", async()=>{
+
+const file=
+
+document
+.getElementById("videoFile")
+.files[0];
+
+if(!file){
+
+alert("Select MP4 first ❌");
+
+return;
+
+}
+
+document
+.getElementById("uploadStatus")
+.innerHTML="⏳ Preparing upload...";
+
+try{
+
+const response=await fetch(
+"https://storybyte-streamtape.storybyte029.workers.dev/"
+);
+
+const data=await response.json();
+
+console.log(data);
+
+document
+.getElementById("uploadStatus")
+.innerHTML="✅ Worker Connected";
+
+
+// TEMPORARY DEMO
+
+uploadedVideoUrl=
+
+"https://streamtape.com/e/demo123";
+
+document
+.getElementById("video")
+.value=
+
+uploadedVideoUrl;
+
+document
+.getElementById("nextBtn")
+.style.display="block";
+
+}
+catch(error){
+
+console.log(error);
+
+document
+.getElementById("uploadStatus")
+.innerHTML="❌ Upload Failed";
+
+}
+
+});
+
+
+// ======================
+// STREAMTAPE CONNECT
+// ======================
+
+document
+
+.getElementById("uploadBtn")
+
+.addEventListener("click",async()=>{
+
+const file=
+
+document
+
+.getElementById("videoFile")
+
+.files[0];
+
+
+if(!file){
+
+alert("Select MP4 first ❌");
+
+return;
+
+}
+
+
+document
+
+.getElementById("uploadStatus")
+
+.innerHTML="⏳ Connecting...";
+
+
+try{
+
+const response=
+
+await fetch(
+
+"https://storybyte-streamtape.storybyte029.workers.dev/",
+
+{
+
+method:"POST"
+
+}
+
+);
+
+
+const data=
+
+await response.json();
+
+
+document
+
+.getElementById("uploadStatus")
+
+.innerHTML=
+
+"✅ Connected";
+
+
+document
+
+.getElementById("nextBtn")
+
+.style.display="block";
+
+
+console.log(data);
+
+}
+
+catch(error){
+
+console.log(error);
+
+
+document
+
+.getElementById("uploadStatus")
+
+.innerHTML=
+
+"❌ Connection Failed";
+
+}
+
+});
+

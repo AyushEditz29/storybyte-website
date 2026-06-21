@@ -22,7 +22,7 @@ max-width:600px;
 
 }
 
-input,textarea{
+input,textarea,select{
 
 width:100%;
 
@@ -43,6 +43,26 @@ border-radius:10px;
 textarea{
 
 height:150px;
+
+select{
+
+width:100%;
+
+padding:15px;
+
+margin:12px 0;
+
+background:#111;
+
+border:1px solid #333;
+
+color:#fff;
+
+border-radius:10px;
+
+font-size:16px;
+
+}
 
 }
 
@@ -89,5 +109,45 @@ margin-bottom:25px;
 #adminPanel h1{
 
 margin-bottom:25px;
+
+}
+
+@media(max-width:768px){
+
+body{
+
+padding:20px;
+
+}
+
+.admin-box{
+
+max-width:100%;
+
+}
+
+input,
+
+textarea,
+
+select,
+
+button{
+
+font-size:16px;
+
+}
+
+}
+
+#uploadPanel{
+
+display:none;
+
+}
+
+#nextBtn{
+
+display:none;
 
 }

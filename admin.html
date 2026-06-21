@@ -50,9 +50,43 @@ Login
 
 </div>
 
+<!-- UPLOAD PANEL -->
+
+<div id="uploadPanel" class="admin-box">
+
+<h1>📹 Upload Video</h1>
+
+<input
+type="file"
+id="videoFile"
+accept="video/mp4">
+
+<button id="uploadBtn">
+
+Upload To Streamtape
+
+</button>
+
+<div id="uploadStatus">
+
+</div>
+
+<button
+id="nextBtn">
+
+Next →
+
+</button>
+
+</div>
+
 <!-- ADMIN PANEL -->
 
-<div id="adminPanel" class="admin-box">
+<div
+id="adminPanel"
+class="admin-box">
+
+<h1>🎬 Publish Drama</h1>
 
 <h1>StoryByte Admin</h1>
 
@@ -62,11 +96,57 @@ id="title"
 
 placeholder="Drama Name">
 
-<input
+<select id="category">
 
-id="category"
+<option value="Romance">
 
-placeholder="Category">
+❤️ Romance
+
+</option>
+
+<option value="Horror">
+
+👻 Horror
+
+</option>
+
+<option value="Action">
+
+💥 Action
+
+</option>
+
+<option value="Comedy">
+
+😀 Comedy
+
+</option>
+
+<option value="Thriller">
+
+🔪 Thriller
+
+</option>
+
+<option value="Drama">
+
+👑 Drama
+
+</option>
+
+<option value="Mystery">
+
+🕵️ Mystery
+
+</option>
+
+<option value="Fantasy">
+
+✨ Fantasy
+
+</option>
+
+</select>
 
 <input
 
@@ -79,12 +159,6 @@ placeholder="Poster URL">
 id="banner"
 
 placeholder="Banner URL">
-
-<input
-
-id="video"
-
-placeholder="Video URL">
 
 <textarea
 
@@ -100,21 +174,14 @@ placeholder="Description">
 
 type="checkbox"
 
-id="trending">
+id="showBanner">
 
-Trending
-
-</label>
-
-<label>
+Add To Banner
 
 <input
-
-type="checkbox"
-
-id="latest">
-
-Latest Upload
+id="video"
+placeholder="Video URL"
+readonly>
 
 </label>
 
