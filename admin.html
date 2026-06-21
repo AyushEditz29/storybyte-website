@@ -15,12 +15,15 @@
         <button id="loginBtn">Login</button>
     </div>
 
-    <div id="uploadPanel" class="admin-box" style="display:none;">
-        <h1>Upload/Link Video</h1>
-        <input type="text" id="manualVideoUrl" placeholder="Paste Streamtape Embed URL here">
-        <button id="setLinkBtn">Set Video Link</button>
-        <button id="nextBtn" style="display:none;">Next →</button>
-    </div>
+   <!-- 2. UPLOAD PAGE -->
+<div id="uploadPanel" class="admin-box" style="display:none;">
+    <h1>Upload Video</h1>
+    <input type="file" id="videoFile" accept="video/mp4">
+    <button id="uploadBtn">Upload to Streamtape</button>
+    <div id="uploadStatus"></div>
+    <!-- Link paste karne ka box hata diya hai -->
+    <button id="nextBtn" style="display:none;">Next →</button>
+</div>
 
     <div id="adminPanel" class="admin-box" style="display:none;">
         <h1>Publish Drama</h1>
