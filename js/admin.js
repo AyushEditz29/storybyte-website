@@ -15,7 +15,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let videoUrlToPublish = ""; // Global variable link save karne ke liye
+// STREAMTAPE CONFIG (Yahan apni details daalo)
+const ST_LOGIN = "	storybyte029@gmail.com"; 
+const ST_KEY = "Qazqwk3bAWf0Q4r";
 
 // 1. LOGIN
 document.getElementById("loginBtn").addEventListener("click", async () => {
@@ -28,39 +30,52 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (error) { alert("Login Error: " + error.message); }
 });
 
-// 2. SET LINK & GO NEXT
-document.getElementById("setLinkBtn").addEventListener("click", () => {
-    videoUrlToPublish = document.getElementById("manualVideoUrl").value;
-    if(videoUrlToPublish) {
-        alert("Link Saved!");
-        document.getElementById("nextBtn").style.display = "block";
-    } else { alert("Pehle Link Paste Karo!"); }
+// 2. DIRECT UPLOAD TO STREAMTAPE
+document.getElementById("uploadBtn").addEventListener("click", async () => {
+    const fileInput = document.getElementById("videoFile");
+    const file = fileInput.files[0];
+    if (!file) { alert("Pehle video select karo!"); return; }
+
+    document.getElementById("uploadStatus").innerText = "Uploading to Streamtape... Wait...";
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("login", ST_LOGIN);
+    formData.append("key", ST_KEY);
+
+    try {
+        const res = await fetch("https://api.streamtape.com/file/ul", { method: "POST", body: formData });
+        const result = await res.json();
+        
+        if(result.status === 200) {
+            // Auto-fill the video link in Publish Panel
+            document.getElementById("video").value = result.result.url;
+            document.getElementById("uploadStatus").innerText = "Upload Successful!";
+            document.getElementById("nextBtn").style.display = "block";
+        } else {
+            alert("Upload Failed: Check API Key/Login");
+        }
+    } catch (e) { alert("Error: " + e.message); }
 });
 
+// 3. NEXT
 document.getElementById("nextBtn").addEventListener("click", () => {
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 });
 
-// 3. PUBLISH
+// 4. PUBLISH
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
-    const category = document.getElementById("category").value;
-    const poster = document.getElementById("poster").value;
-    const banner = document.getElementById("banner").value;
-    const description = document.getElementById("description").value;
-    const showBanner = document.getElementById("showBanner").checked;
+    const video = document.getElementById("video").value;
+    if (!title || !video) { alert("Sabhi details bharein!"); return; }
 
-    if (!title || !videoUrlToPublish) { alert("Title aur Video URL compulsory hai!"); return; }
-
-    try {
-        await addDoc(collection(db, "dramas"), {
-            title, category, poster, banner, description, showBanner,
-            video: videoUrlToPublish, 
-            views: 0, 
-            createdAt: Date.now()
-        });
-        alert("Drama Successfully Published!");
-        location.reload(); // Page refresh to reset
-    } catch (error) { alert("Error: " + error.message); }
+    await addDoc(collection(db, "dramas"), {
+        title, video, category: document.getElementById("category").value,
+        poster: document.getElementById("poster").value,
+        banner: document.getElementById("banner").value,
+        createdAt: Date.now()
+    });
+    alert("Drama Published!");
+    location.reload();
 });
