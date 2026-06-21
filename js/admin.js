@@ -15,52 +15,52 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// 1. LOGIN LOGIC
+let videoUrlToPublish = ""; // Global variable link save karne ke liye
+
+// 1. LOGIN
 document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     try {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("Login Successful!");
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("uploadPanel").style.display = "block";
-    } catch (error) {
-        alert("Login Failed: " + error.message);
-    }
+    } catch (error) { alert("Login Error: " + error.message); }
 });
 
-// 2. UPLOAD TO NEXT (Transition Logic)
+// 2. SET LINK & GO NEXT
+document.getElementById("setLinkBtn").addEventListener("click", () => {
+    videoUrlToPublish = document.getElementById("manualVideoUrl").value;
+    if(videoUrlToPublish) {
+        alert("Link Saved!");
+        document.getElementById("nextBtn").style.display = "block";
+    } else { alert("Pehle Link Paste Karo!"); }
+});
+
 document.getElementById("nextBtn").addEventListener("click", () => {
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 });
 
-// 3. PUBLISH DRAMA LOGIC
+// 3. PUBLISH
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
     const category = document.getElementById("category").value;
     const poster = document.getElementById("poster").value;
     const banner = document.getElementById("banner").value;
-    const video = document.getElementById("video").value;
     const description = document.getElementById("description").value;
     const showBanner = document.getElementById("showBanner").checked;
 
-    if (!title || !video) { 
-        alert("Drama Name aur Video URL compulsory hain!"); 
-        return; 
-    }
+    if (!title || !videoUrlToPublish) { alert("Title aur Video URL compulsory hai!"); return; }
 
     try {
         await addDoc(collection(db, "dramas"), {
-            title, category, poster, banner, video, description, showBanner, 
+            title, category, poster, banner, description, showBanner,
+            video: videoUrlToPublish, 
             views: 0, 
             createdAt: Date.now()
         });
-        alert("Drama Successfully Published to Database!");
-        // Form clear karne ke liye
-        document.getElementById("title").value = "";
-        document.getElementById("video").value = "";
-    } catch (error) {
-        alert("Error: " + error.message);
-    }
+        alert("Drama Successfully Published!");
+        location.reload(); // Page refresh to reset
+    } catch (error) { alert("Error: " + error.message); }
 });

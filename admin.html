@@ -8,7 +8,6 @@
 </head>
 <body>
 
-    <!-- LOGIN -->
     <div id="loginBox" class="admin-box">
         <h1>Admin Login</h1>
         <input id="email" type="email" placeholder="Email">
@@ -16,15 +15,13 @@
         <button id="loginBtn">Login</button>
     </div>
 
-    <!-- UPLOAD PANEL -->
-    <div id="uploadPanel" style="display:none;">
-        <input type="file" id="videoFile" accept="video/mp4">
-        <button id="uploadBtn">Upload Video</button>
-        <div id="uploadStatus"></div>
-        <button id="nextBtn" style="display:none;">Next</button>
+    <div id="uploadPanel" class="admin-box" style="display:none;">
+        <h1>Upload/Link Video</h1>
+        <input type="text" id="manualVideoUrl" placeholder="Paste Streamtape Embed URL here">
+        <button id="setLinkBtn">Set Video Link</button>
+        <button id="nextBtn" style="display:none;">Next →</button>
     </div>
 
-    <!-- ADMIN PANEL -->
     <div id="adminPanel" class="admin-box" style="display:none;">
         <h1>Publish Drama</h1>
         <input id="title" placeholder="Drama Name">
@@ -41,13 +38,7 @@
         <input id="poster" placeholder="Poster URL">
         <input id="banner" placeholder="Banner URL">
         <textarea id="description" placeholder="Description"></textarea>
-        
-        <label>
-            <input type="checkbox" id="showBanner"> Add To Banner
-        </label>
-        
-        <!-- Yahan sirf ek hi video ID hai -->
-        <input id="video" placeholder="Video URL">
+        <label><input type="checkbox" id="showBanner"> Add To Banner</label>
         
         <button id="publishBtn">Publish Drama</button>
     </div>
