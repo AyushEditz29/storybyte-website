@@ -77,4 +77,15 @@ document.getElementById("publishBtn").addEventListener("click", async () => {
         alert("Drama Successfully Published!");
         location.reload();
     } catch (error) { alert("Error: " + error.message); }
+
+    const nextStep = confirm("Kya aap Dashboard (Delete karne) par jana chahte hain?");
+
+if (nextStep) {
+    window.location.href = "dashboard.html"; // Dashboard khulega
+} else {
+    location.reload(); // Wahi page refresh hoga
+}
+
+
 });
+

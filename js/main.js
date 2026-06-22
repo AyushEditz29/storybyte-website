@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
@@ -13,39 +13,51 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function loadContent() {
-    const dramaContainer = document.getElementById("dramaContainer");
-    const bannerContainer = document.getElementById("bannerContainer"); // Banner ke liye
-    const q = query(collection(db, "dramas"), orderBy("createdAt", "desc"));
-    const querySnapshot = await getDocs(q);
-
-    dramaContainer.innerHTML = ""; 
-    if(bannerContainer) bannerContainer.innerHTML = "";
-
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
+// Trending Videos (Most Watched - limit 4)
+async function loadTrending() {
+    try {
+        const q = query(collection(db, "dramas"), orderBy("views", "desc"), limit(4));
+        const snapshot = await getDocs(q);
+        const container = document.getElementById("trendingCards");
+        if (!container) return;
         
-        // 1. All Dramas Grid
-        const dramaCard = `
-            <div class="card" onclick="window.location.href='drama.html?id=${doc.id}'">
-                <img src="${data.poster}" alt="${data.title}">
-                <h3>${data.title}</h3>
-                <p>${data.category}</p>
-            </div>
-        `;
-        dramaContainer.innerHTML += dramaCard;
-
-        // 2. Banner Logic (Agar showBanner tick hai)
-        if (data.showBanner && bannerContainer) {
-            const bannerItem = `
-                <div class="banner-item" onclick="window.location.href='drama.html?id=${doc.id}'">
-                    <img src="${data.banner}" alt="${data.title}">
-                </div>
-            `;
-            bannerContainer.innerHTML += bannerItem;
-        }
-    });
+        container.innerHTML = "";
+        snapshot.forEach(doc => {
+            const d = doc.data();
+            container.innerHTML += `
+                <a href="drama.html?id=${doc.id}">
+                    <div class="card">
+                        <img src="${d.poster}" alt="${d.title}">
+                    </div>
+                </a>`;
+        });
+    } catch (e) { console.error("Error Trending:", e); }
 }
 
-// Page load hote hi load karo
-loadContent();
+// Latest Uploads (Newest - limit 10)
+async function loadLatest() {
+    try {
+        const q = query(collection(db, "dramas"), orderBy("createdAt", "desc"), limit(10));
+        const snapshot = await getDocs(q);
+        const container = document.getElementById("latestCards");
+        if (!container) return;
+
+        container.innerHTML = "";
+        snapshot.forEach(doc => {
+            const d = doc.data();
+            container.innerHTML += `
+                <a href="drama.html?id=${doc.id}">
+                    <div class="card">
+                        <img src="${d.poster}" alt="${d.title}">
+                        <h3>${d.title}</h3>
+                    </div>
+                </a>`;
+        });
+    } catch (e) { console.error("Error Latest:", e); }
+}
+
+// Initial Load
+document.addEventListener("DOMContentLoaded", () => {
+    loadTrending();
+    loadLatest();
+});
