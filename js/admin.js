@@ -14,11 +14,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const ST_LOGIN = "adfb41ddf0db9841c580";
-const ST_KEY = "Qazqwk3bAWf0Q4r";
+
+// Yahan apna Worker URL daalo jo Cloudflare ne diya hai
+const WORKER_URL = "https://storybyte-streamtape.storybyte029.workers.dev/"; 
 let uploadedVideoUrl = "";
 
-// 1. Login Logic
 document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -29,90 +29,67 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (error) { alert("Login Error: " + error.message); }
 });
 
-// 2. Upload Logic (Google Drive -> Streamtape)
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
-    if (!videoUrl) { alert("Pehle Google Drive link paste karo!"); return; }
-    
-    // Drive Link Fix
-    if (videoUrl.includes("/file/d/")) {
-        const fileId = videoUrl.split("/d/")[1].split("/")[0];
-        videoUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-    }
+    if (!videoUrl) { alert("Drive link paste karo!"); return; }
 
-    document.getElementById("uploadStatus").innerText = "Transferring to Streamtape...";
+    document.getElementById("uploadStatus").innerText = "Cloudflare Worker ke through bhej rahe hain...";
     document.getElementById("uploadBtn").disabled = true;
 
     try {
-        const remoteUrl = `https://api.streamtape.com/remotedl/add?login=${ST_LOGIN}&key=${ST_KEY}&url=${encodeURIComponent(videoUrl)}`;
-        const res = await fetch(remoteUrl);
-        const result = await res.json();
+        // Worker ko request bhej rahe hain
+        const res = await fetch(WORKER_URL, {
+            method: "POST",
+            body: JSON.stringify({ url: videoUrl })
+        });
+        const data = await res.json();
 
-        if(result.status === 200) {
-            const remoteId = result.result.id;
+        if(data.status === 200) {
+            const remoteId = data.result.id;
+            document.getElementById("uploadStatus").innerText = "Upload Shuru ho gaya! Wait karo...";
             
-            // Loop for Status Check
+            // Loop check
             const checkStatus = async () => {
-                const statusRes = await fetch(`https://api.streamtape.com/remotedl/getstatus?login=${ST_LOGIN}&key=${ST_KEY}&id=${remoteId}`);
+                const statusRes = await fetch(`https://api.streamtape.com/remotedl/getstatus?login=adfb41ddf0db9841c580&key=Qazqwk3bAWf0Q4r&id=${remoteId}`);
                 const statusData = await statusRes.json();
                 
                 const item = statusData.result ? statusData.result[remoteId] : null;
                 
-                if(item && (item.status === "finished" || item.status === "success")) {
-                    uploadedVideoUrl = item.url || item.link || "";
+                if(item && item.status === "finished") {
+                    uploadedVideoUrl = item.url || item.link;
                     document.getElementById("uploadStatus").innerText = "Upload Completed!";
                     document.getElementById("nextBtn").style.display = "block";
-                    // Agar koi display field banayi hai toh yahan update karo
-                    if(document.getElementById("videoLinkDisplay")) {
-                        document.getElementById("videoLinkDisplay").value = uploadedVideoUrl;
-                    }
                 } else {
-                    document.getElementById("uploadStatus").innerText = "Still processing... (Waiting for Streamtape)";
+                    document.getElementById("uploadStatus").innerText = "Still processing... (Cloudflare active)";
                     setTimeout(checkStatus, 5000); 
                 }
             };
             checkStatus();
-        } else { 
-            alert("Failed: " + result.msg); 
-            document.getElementById("uploadBtn").disabled = false; 
+        } else {
+            alert("Error: " + data.msg);
+            document.getElementById("uploadBtn").disabled = false;
         }
-    } catch (e) { alert("Error: " + e.message); document.getElementById("uploadBtn").disabled = false; }
+    } catch (e) { alert("Worker Error: " + e.message); document.getElementById("uploadBtn").disabled = false; }
 });
 
-// 3. Navigation
 document.getElementById("nextBtn").addEventListener("click", () => {
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 });
 
-// 4. Publish Logic
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
     const category = document.getElementById("category").value;
     const poster = document.getElementById("poster").value;
-    const banner = document.getElementById("banner").value;
     const description = document.getElementById("description").value;
-    const showBanner = document.getElementById("showBanner").checked;
-
-    if (!title || !uploadedVideoUrl) { 
-        alert("Error: Video link generate nahi hui hai, zara wait karo!"); 
-        return; 
-    }
     
-    try {
-        await addDoc(collection(db, "dramas"), { 
-            title, category, poster, banner, description, showBanner, 
-            video: uploadedVideoUrl, 
-            views: 0, 
-            createdAt: Date.now() 
-        });
-        
-        alert("Drama Successfully Published!");
-        
-        if (confirm("Dashboard (Delete karne) par jana hai?")) {
-            window.location.href = "dashboard.html";
-        } else {
-            location.reload();
-        }
-    } catch (error) { alert("Error: " + error.message); }
+    if (!title || !uploadedVideoUrl) { alert("Title aur Link zaroori hai!"); return; }
+    
+    await addDoc(collection(db, "dramas"), { 
+        title, category, poster, description, video: uploadedVideoUrl, 
+        views: 0, createdAt: Date.now() 
+    });
+    
+    alert("Published!");
+    window.location.href = "dashboard.html";
 });
