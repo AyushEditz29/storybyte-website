@@ -1331,3 +1331,14 @@ a, a:visited, a:hover, a:active {
     text-decoration: none;
     outline: none;
 }
+
+/* --- Plyr UI Force Fix --- */
+.plyr {
+    width: 100% !important;
+    border-radius: 20px !important;
+}
+
+.plyr__controls {
+    display: flex !important;
+    opacity: 1 !important;
+}

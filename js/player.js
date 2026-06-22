@@ -16,6 +16,7 @@ const db = getFirestore(app);
 const urlParams = new URLSearchParams(window.location.search);
 const dramaId = urlParams.get('id');
 
+// Drama Load Logic
 async function loadDrama() {
     if (!dramaId) return;
     
@@ -30,15 +31,19 @@ async function loadDrama() {
             document.getElementById("dramaStory").innerText = data.description;
             document.getElementById("viewCount").innerText = (data.views + 1) + " Views";
             
-            const player = document.getElementById("player");
-            player.src = data.video; 
+            const playerElement = document.getElementById("player");
+            playerElement.src = data.video; 
             
-            // Plyr Initialize
-            if (window.Plyr) {
-                new window.Plyr('#player');
-            }
+            // Plyr Initialization with Force Delay
+            setTimeout(() => {
+                if (window.Plyr) {
+                    new window.Plyr('#player', {
+                        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
+                    });
+                    console.log("Plyr UI Attached!");
+                }
+            }, 500);
             
-            // Load related by category
             loadRelatedDramas(data.category);
         }
     } catch (error) { console.error("Error:", error); }
@@ -52,7 +57,6 @@ async function loadRelatedDramas(category) {
     relatedBox.innerHTML = "";
     snap.forEach(doc => {
         const drama = doc.data();
-        // Category match aur current drama exclude
         if(drama.category === category && doc.id !== dramaId) {
             relatedBox.innerHTML += `
                 <a href="drama.html?id=${doc.id}">
@@ -65,4 +69,5 @@ async function loadRelatedDramas(category) {
     });
 }
 
-loadDrama();
+// Initial Call
+document.addEventListener("DOMContentLoaded", loadDrama);
