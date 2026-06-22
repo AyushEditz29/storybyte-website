@@ -1,123 +1,41 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>StoryByte</title>
-
-<link rel="stylesheet" href="css/style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryByte</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
+    <section class="hero">
+        <img src="images/storybyte-logo.png.png" style="height:90px; margin-bottom:25px;">
+        <h1>Advertisement</h1>
+        <p>Please wait...</p>
+        <br>
+        <h2 id="timer">5</h2>
+        <br>
+        <button id="continueBtn" class="watch-btn" disabled>Continue</button>
+    </section>
+    <script>
+        let seconds = 5;
+        const timer = document.getElementById("timer");
+        const btn = document.getElementById("continueBtn");
+        const params = new URLSearchParams(window.location.search);
+        const next = params.get("next");
+        
+        const interval = setInterval(() => {
+            seconds--;
+            timer.innerText = seconds;
+            if(seconds <= 0){
+                clearInterval(interval);
+                btn.disabled = false;
+                btn.innerText = "Continue";
+            }
+        }, 1000);
 
-<section class="hero">
-
-<img
-
-src="images/storybyte-logo.png.png"
-
-style="height:90px; margin-bottom:25px;">
-
-<h1>
-
-Advertisement
-
-</h1>
-
-<p>
-
-Please wait...
-
-</p>
-
-<br>
-
-<h2 id="timer">
-
-5
-
-</h2>
-
-<br>
-
-<button
-
-id="continueBtn"
-
-class="watch-btn"
-
-disabled>
-
-Continue
-
-</button>
-
-</section>
-
-<script>
-
-let seconds=5;
-
-const timer=
-
-document.getElementById("timer");
-
-const btn=
-
-document.getElementById("continueBtn");
-
-const params=
-
-new URLSearchParams(
-
-window.location.search
-
-);
-
-const next=
-
-params.get("next");
-
-
-const interval=
-
-setInterval(()=>{
-
-seconds--;
-
-timer.innerText=seconds;
-
-if(seconds<=0){
-
-clearInterval(interval);
-
-btn.disabled=false;
-
-btn.innerText="Continue";
-
-}
-
-},1000);
-
-
-btn.onclick=()=>{
-
-if(next){
-
-window.location.href=next;
-
-}
-
-};
-
-</script>
-
+        btn.onclick = () => {
+            if(next) { window.location.href = next; }
+        };
+    </script>
 </body>
-
 </html>

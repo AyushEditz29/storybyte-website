@@ -1,233 +1,51 @@
-// StoryByte Main JS
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-console.log("StoryByte Loaded");
-
-// Search box
-
-const searchInput = document.querySelector(".search-box input");
-
-if(searchInput){
-
-searchInput.addEventListener("keyup", function(){
-
-const value = this.value.toLowerCase();
-
-const cards = document.querySelectorAll(".card");
-
-cards.forEach(card=>{
-
-const title = card.innerText.toLowerCase();
-
-if(title.includes(value)){
-
-card.style.display="block";
-
-}else{
-
-card.style.display="none";
-
-}
-
-});
-
-});
-
-}
-
-
-// =======================
-
-// View All Dramas
-
-// =======================
-
-
-const viewAllBtn =
-
-document.getElementById("viewAllBtn");
-
-const allCards =
-
-document.getElementById("allCards");
-
-if(viewAllBtn && allCards){
-
-viewAllBtn.addEventListener("click",()=>{
-
-allCards.classList.toggle("hidden");
-
-if(
-
-allCards.classList.contains("hidden")
-
-){
-
-viewAllBtn.innerText=
-
-"View All Dramas →";
-
-}
-
-else{
-
-viewAllBtn.innerText=
-
-"Show Less ↑";
-
-}
-
-});
-
-}
-
-import { initializeApp }
-
-from
-
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-
-getFirestore,
-
-collection,
-
-getDocs,
-
-query,
-
-orderBy,
-
-limit
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-const firebaseConfig={
-
-apiKey:"AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
-
-authDomain:"storybyteappin.firebaseapp.com",
-
-projectId:"storybyteappin",
-
-storageBucket:"storybyteappin.firebasestorage.app",
-
-messagingSenderId:"113135240391",
-
-appId:"1:113135240391:web:53586b59385268dfefeae2"
-
+const firebaseConfig = {
+    apiKey: "AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
+    authDomain: "storybyteappin.firebaseapp.com",
+    projectId: "storybyteappin",
+    storageBucket: "storybyteappin.firebasestorage.app",
+    messagingSenderId: "113135240391",
+    appId: "1:113135240391:web:53586b59385268dfefeae2"
 };
 
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-const app=
+async function loadContent() {
+    const dramaContainer = document.getElementById("dramaContainer");
+    const bannerContainer = document.getElementById("bannerContainer"); // Banner ke liye
+    const q = query(collection(db, "dramas"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
 
-initializeApp(firebaseConfig);
+    dramaContainer.innerHTML = ""; 
+    if(bannerContainer) bannerContainer.innerHTML = "";
 
-const db=
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        
+        // 1. All Dramas Grid
+        const dramaCard = `
+            <div class="card" onclick="window.location.href='drama.html?id=${doc.id}'">
+                <img src="${data.poster}" alt="${data.title}">
+                <h3>${data.title}</h3>
+                <p>${data.category}</p>
+            </div>
+        `;
+        dramaContainer.innerHTML += dramaCard;
 
-getFirestore(app);
-
-
-// =====================
-
-// BANNERS
-
-// =====================
-
-async function loadBanner(){
-
-const q=
-
-query(
-
-collection(db,"dramas"),
-
-orderBy("createdAt","desc"),
-
-limit(4)
-
-);
-
-const snap=
-
-await getDocs(q);
-
-const banners=[];
-
-
-snap.forEach(doc=>{
-
-const data=
-
-doc.data();
-
-if(data.showBanner){
-
-banners.push(data);
-
+        // 2. Banner Logic (Agar showBanner tick hai)
+        if (data.showBanner && bannerContainer) {
+            const bannerItem = `
+                <div class="banner-item" onclick="window.location.href='drama.html?id=${doc.id}'">
+                    <img src="${data.banner}" alt="${data.title}">
+                </div>
+            `;
+            bannerContainer.innerHTML += bannerItem;
+        }
+    });
 }
 
-});
-
-
-if(!banners.length){
-
-return;
-
-}
-
-
-let current=0;
-
-const heroBanner=
-
-document.getElementById("heroBanner");
-
-const bannerLink=
-
-document.getElementById("bannerLink");
-
-
-heroBanner.src=
-
-banners[0].banner;
-
-bannerLink.href=
-
-"drama.html?id="+
-
-banners[0].title;
-
-
-setInterval(()=>{
-
-current++;
-
-if(current>=banners.length){
-
-current=0;
-
-}
-
-
-heroBanner.src=
-
-banners[current].banner;
-
-
-bannerLink.href=
-
-"drama.html?id="+
-
-banners[current].title;
-
-},5000);
-
-}
-
-loadBanner();
+// Page load hote hi load karo
+loadContent();

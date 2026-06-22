@@ -9,17 +9,15 @@ const firebaseConfig = {
     storageBucket: "storybyteappin.firebasestorage.app",
     messagingSenderId: "113135240391",
     appId: "1:113135240391:web:53586b59385268dfefeae2"
-};
+}; // <--- Fixed closing brace here
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-
-const ST_LOGIN = "adfb41ddf0db9841c580"; 
+const ST_LOGIN = "adfb41ddf0db9841c580";
 const ST_KEY = "Qazqwk3bAWf0Q4r";
-let uploadedVideoUrl = ""; 
+let uploadedVideoUrl = "";
 
-// Login Logic
 document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -30,41 +28,42 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (error) { alert("Login Error: " + error.message); }
 });
 
-// Remote Upload Logic (With Drive Converter)
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
-    if (!videoUrl) { alert("Pehle link paste karo!"); return; }
-
-    // Logic: Convert Google Drive View link to Download link
+    if (!videoUrl) { alert("Pehle Google Drive link paste karo!"); return; }
     if (videoUrl.includes("/file/d/")) {
         const fileId = videoUrl.split("/d/")[1].split("/")[0];
         videoUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
     }
-
-    document.getElementById("uploadStatus").innerText = "Transferring to Streamtape... please wait...";
+    document.getElementById("uploadStatus").innerText = "Transferring...";
+    document.getElementById("uploadBtn").disabled = true;
     const remoteUrl = `https://api.streamtape.com/remotedl/add?login=${ST_LOGIN}&key=${ST_KEY}&url=${encodeURIComponent(videoUrl)}`;
-
     try {
         const res = await fetch(remoteUrl);
         const result = await res.json();
-        
         if(result.status === 200) {
-            uploadedVideoUrl = videoUrl; // Link save ho gaya
-            document.getElementById("uploadStatus").innerText = "Transfer Started! Next par click karein.";
-            document.getElementById("nextBtn").style.display = "block";
-        } else {
-            alert("Upload Failed: " + result.msg);
-        }
-    } catch (e) { alert("Error: " + e.message); }
+            const remoteId = result.result.id;
+            setTimeout(async () => {
+                const statusRes = await fetch(`https://api.streamtape.com/remotedl/getstatus?login=${ST_LOGIN}&key=${ST_KEY}&id=${remoteId}`);
+                const statusData = await statusRes.json();
+                if(statusData.result[remoteId].status === "finished") {
+                    uploadedVideoUrl = statusData.result[remoteId].url;
+                    document.getElementById("uploadStatus").innerText = "Upload Completed!";
+                    document.getElementById("nextBtn").style.display = "block";
+                } else {
+                    document.getElementById("uploadStatus").innerText = "Still processing...";
+                    document.getElementById("uploadBtn").disabled = false;
+                }
+            }, 15000);
+        } else { alert("Failed: " + result.msg); document.getElementById("uploadBtn").disabled = false; }
+    } catch (e) { alert("Error: " + e.message); document.getElementById("uploadBtn").disabled = false; }
 });
 
-// Navigation
 document.getElementById("nextBtn").addEventListener("click", () => {
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 });
 
-// Publish Logic
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
     const category = document.getElementById("category").value;
@@ -72,17 +71,10 @@ document.getElementById("publishBtn").addEventListener("click", async () => {
     const banner = document.getElementById("banner").value;
     const description = document.getElementById("description").value;
     const showBanner = document.getElementById("showBanner").checked;
-
     if (!title || !uploadedVideoUrl) { alert("Title aur Video Link compulsory hai!"); return; }
-
     try {
-        await addDoc(collection(db, "dramas"), {
-            title, category, poster, banner, description, showBanner,
-            video: uploadedVideoUrl, 
-            views: 0, 
-            createdAt: Date.now()
-        });
+        await addDoc(collection(db, "dramas"), { title, category, poster, banner, description, showBanner, video: uploadedVideoUrl, views: 0, createdAt: Date.now() });
         alert("Drama Successfully Published!");
-        location.reload(); 
+        location.reload();
     } catch (error) { alert("Error: " + error.message); }
 });
