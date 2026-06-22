@@ -18,6 +18,7 @@ const ST_LOGIN = "adfb41ddf0db9841c580";
 const ST_KEY = "Qazqwk3bAWf0Q4r";
 let uploadedVideoUrl = "";
 
+// 1. Login Logic
 document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -28,10 +29,12 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (error) { alert("Login Error: " + error.message); }
 });
 
+// 2. Upload Logic (Google Drive -> Streamtape)
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
     if (!videoUrl) { alert("Pehle Google Drive link paste karo!"); return; }
     
+    // Drive Link Fix
     if (videoUrl.includes("/file/d/")) {
         const fileId = videoUrl.split("/d/")[1].split("/")[0];
         videoUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
@@ -53,12 +56,18 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
                 const statusRes = await fetch(`https://api.streamtape.com/remotedl/getstatus?login=${ST_LOGIN}&key=${ST_KEY}&id=${remoteId}`);
                 const statusData = await statusRes.json();
                 
-                if(statusData.result && statusData.result[remoteId] && statusData.result[remoteId].status === "finished") {
-                    uploadedVideoUrl = statusData.result[remoteId].url;
+                const item = statusData.result ? statusData.result[remoteId] : null;
+                
+                if(item && (item.status === "finished" || item.status === "success")) {
+                    uploadedVideoUrl = item.url || item.link || "";
                     document.getElementById("uploadStatus").innerText = "Upload Completed!";
                     document.getElementById("nextBtn").style.display = "block";
+                    // Agar koi display field banayi hai toh yahan update karo
+                    if(document.getElementById("videoLinkDisplay")) {
+                        document.getElementById("videoLinkDisplay").value = uploadedVideoUrl;
+                    }
                 } else {
-                    document.getElementById("uploadStatus").innerText = "Still processing... waiting...";
+                    document.getElementById("uploadStatus").innerText = "Still processing... (Waiting for Streamtape)";
                     setTimeout(checkStatus, 5000); 
                 }
             };
@@ -70,11 +79,13 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
     } catch (e) { alert("Error: " + e.message); document.getElementById("uploadBtn").disabled = false; }
 });
 
+// 3. Navigation
 document.getElementById("nextBtn").addEventListener("click", () => {
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 });
 
+// 4. Publish Logic
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
     const category = document.getElementById("category").value;
@@ -83,7 +94,10 @@ document.getElementById("publishBtn").addEventListener("click", async () => {
     const description = document.getElementById("description").value;
     const showBanner = document.getElementById("showBanner").checked;
 
-    if (!title || !uploadedVideoUrl) { alert("Title aur Video Link compulsory hai!"); return; }
+    if (!title || !uploadedVideoUrl) { 
+        alert("Error: Video link generate nahi hui hai, zara wait karo!"); 
+        return; 
+    }
     
     try {
         await addDoc(collection(db, "dramas"), { 
@@ -95,8 +109,7 @@ document.getElementById("publishBtn").addEventListener("click", async () => {
         
         alert("Drama Successfully Published!");
         
-        const nextStep = confirm("Kya aap Dashboard (Delete karne) par jana chahte hain?");
-        if (nextStep) {
+        if (confirm("Dashboard (Delete karne) par jana hai?")) {
             window.location.href = "dashboard.html";
         } else {
             location.reload();
