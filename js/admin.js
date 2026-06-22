@@ -28,7 +28,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (error) { alert("Login Error: " + error.message); }
 });
 
-// UPLOAD PROCESS
+// UPLOAD PROCESS (Worker Integrated)
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
     if (!videoUrl) { alert("Drive link daalo!"); return; }
@@ -37,20 +37,23 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
     document.getElementById("uploadBtn").disabled = true;
 
     try {
-        // 1. Start Remote Upload via Worker
+        // 1. Upload Request
         const res = await fetch(WORKER_URL, {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "upload", url: videoUrl })
         });
         const data = await res.json();
 
         if(data.status === 200) {
             const remoteId = data.result.id;
+            document.getElementById("uploadStatus").innerText = "Upload Started...";
             
-            // 2. Check Status via Worker
+            // 2. Status Loop
             const checkStatus = async () => {
                 const statusRes = await fetch(WORKER_URL, {
                     method: "POST",
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ action: "status", id: remoteId })
                 });
                 const statusData = await statusRes.json();
@@ -62,12 +65,15 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
                     document.getElementById("uploadStatus").innerText = "Upload Completed!";
                     document.getElementById("nextBtn").style.display = "block";
                 } else {
-                    document.getElementById("uploadStatus").innerText = "Still processing... " + (item ? item.status : "waiting");
+                    document.getElementById("uploadStatus").innerText = "Processing... (Waiting for Streamtape)";
                     setTimeout(checkStatus, 5000); 
                 }
             };
             checkStatus();
-        } else { alert("Failed: " + data.msg); document.getElementById("uploadBtn").disabled = false; }
+        } else { 
+            alert("Failed: " + (data.msg || "Unknown error")); 
+            document.getElementById("uploadBtn").disabled = false; 
+        }
     } catch (e) { alert("Error: " + e.message); document.getElementById("uploadBtn").disabled = false; }
 });
 
@@ -79,12 +85,12 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
-    if (!title || !uploadedVideoUrl) { alert("Data missing!"); return; }
+    if (!title || !uploadedVideoUrl) { alert("Title aur Video Link fill karo!"); return; }
     
     await addDoc(collection(db, "dramas"), { 
         title, video: uploadedVideoUrl, createdAt: Date.now() 
     });
     
-    alert("Published!");
+    alert("Drama Published Successfully!");
     window.location.href = "dashboard.html";
 });
