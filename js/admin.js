@@ -9,7 +9,7 @@ const firebaseConfig = {
     storageBucket: "storybyteappin.firebasestorage.app",
     messagingSenderId: "113135240391",
     appId: "1:113135240391:web:53586b59385268dfefeae2"
-}; // <--- Fixed closing brace here
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -31,31 +31,42 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
     if (!videoUrl) { alert("Pehle Google Drive link paste karo!"); return; }
+    
     if (videoUrl.includes("/file/d/")) {
         const fileId = videoUrl.split("/d/")[1].split("/")[0];
         videoUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
     }
-    document.getElementById("uploadStatus").innerText = "Transferring...";
+
+    document.getElementById("uploadStatus").innerText = "Transferring to Streamtape...";
     document.getElementById("uploadBtn").disabled = true;
-    const remoteUrl = `https://api.streamtape.com/remotedl/add?login=${ST_LOGIN}&key=${ST_KEY}&url=${encodeURIComponent(videoUrl)}`;
+
     try {
+        const remoteUrl = `https://api.streamtape.com/remotedl/add?login=${ST_LOGIN}&key=${ST_KEY}&url=${encodeURIComponent(videoUrl)}`;
         const res = await fetch(remoteUrl);
         const result = await res.json();
+
         if(result.status === 200) {
             const remoteId = result.result.id;
-            setTimeout(async () => {
+            
+            // Loop for Status Check
+            const checkStatus = async () => {
                 const statusRes = await fetch(`https://api.streamtape.com/remotedl/getstatus?login=${ST_LOGIN}&key=${ST_KEY}&id=${remoteId}`);
                 const statusData = await statusRes.json();
-                if(statusData.result[remoteId].status === "finished") {
+                
+                if(statusData.result && statusData.result[remoteId] && statusData.result[remoteId].status === "finished") {
                     uploadedVideoUrl = statusData.result[remoteId].url;
                     document.getElementById("uploadStatus").innerText = "Upload Completed!";
                     document.getElementById("nextBtn").style.display = "block";
                 } else {
-                    document.getElementById("uploadStatus").innerText = "Still processing...";
-                    document.getElementById("uploadBtn").disabled = false;
+                    document.getElementById("uploadStatus").innerText = "Still processing... waiting...";
+                    setTimeout(checkStatus, 5000); 
                 }
-            }, 15000);
-        } else { alert("Failed: " + result.msg); document.getElementById("uploadBtn").disabled = false; }
+            };
+            checkStatus();
+        } else { 
+            alert("Failed: " + result.msg); 
+            document.getElementById("uploadBtn").disabled = false; 
+        }
     } catch (e) { alert("Error: " + e.message); document.getElementById("uploadBtn").disabled = false; }
 });
 
@@ -71,21 +82,24 @@ document.getElementById("publishBtn").addEventListener("click", async () => {
     const banner = document.getElementById("banner").value;
     const description = document.getElementById("description").value;
     const showBanner = document.getElementById("showBanner").checked;
+
     if (!title || !uploadedVideoUrl) { alert("Title aur Video Link compulsory hai!"); return; }
+    
     try {
-        await addDoc(collection(db, "dramas"), { title, category, poster, banner, description, showBanner, video: uploadedVideoUrl, views: 0, createdAt: Date.now() });
+        await addDoc(collection(db, "dramas"), { 
+            title, category, poster, banner, description, showBanner, 
+            video: uploadedVideoUrl, 
+            views: 0, 
+            createdAt: Date.now() 
+        });
+        
         alert("Drama Successfully Published!");
-        location.reload();
+        
+        const nextStep = confirm("Kya aap Dashboard (Delete karne) par jana chahte hain?");
+        if (nextStep) {
+            window.location.href = "dashboard.html";
+        } else {
+            location.reload();
+        }
     } catch (error) { alert("Error: " + error.message); }
-
-    const nextStep = confirm("Kya aap Dashboard (Delete karne) par jana chahte hain?");
-
-if (nextStep) {
-    window.location.href = "dashboard.html"; // Dashboard khulega
-} else {
-    location.reload(); // Wahi page refresh hoga
-}
-
-
 });
-
