@@ -19,7 +19,7 @@ const ST_LOGIN = "adfb41ddf0db9841c580";
 const ST_KEY = "Qazqwk3bAWf0Q4r";
 let uploadedVideoUrl = ""; 
 
-// Login
+// Login Logic
 document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -30,32 +30,41 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (error) { alert("Login Error: " + error.message); }
 });
 
-// Remote Upload
+// Remote Upload Logic (With Drive Converter)
 document.getElementById("uploadBtn").addEventListener("click", async () => {
-    const videoUrl = document.getElementById("manualVideoUrl").value;
-    if (!videoUrl) { alert("Link paste karo!"); return; }
+    let videoUrl = document.getElementById("manualVideoUrl").value;
+    if (!videoUrl) { alert("Pehle link paste karo!"); return; }
 
-    document.getElementById("uploadStatus").innerText = "Transferring... please wait...";
+    // Logic: Convert Google Drive View link to Download link
+    if (videoUrl.includes("/file/d/")) {
+        const fileId = videoUrl.split("/d/")[1].split("/")[0];
+        videoUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+    }
+
+    document.getElementById("uploadStatus").innerText = "Transferring to Streamtape... please wait...";
     const remoteUrl = `https://api.streamtape.com/remotedl/add?login=${ST_LOGIN}&key=${ST_KEY}&url=${encodeURIComponent(videoUrl)}`;
 
     try {
         const res = await fetch(remoteUrl);
         const result = await res.json();
+        
         if(result.status === 200) {
-            uploadedVideoUrl = videoUrl;
+            uploadedVideoUrl = videoUrl; // Link save ho gaya
             document.getElementById("uploadStatus").innerText = "Transfer Started! Next par click karein.";
             document.getElementById("nextBtn").style.display = "block";
-        } else { alert("Failed: " + result.msg); }
+        } else {
+            alert("Upload Failed: " + result.msg);
+        }
     } catch (e) { alert("Error: " + e.message); }
 });
 
-// Next Step
+// Navigation
 document.getElementById("nextBtn").addEventListener("click", () => {
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 });
 
-// Publish
+// Publish Logic
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
     const category = document.getElementById("category").value;
@@ -64,14 +73,16 @@ document.getElementById("publishBtn").addEventListener("click", async () => {
     const description = document.getElementById("description").value;
     const showBanner = document.getElementById("showBanner").checked;
 
-    if (!title || !uploadedVideoUrl) { alert("Sab fill karo!"); return; }
+    if (!title || !uploadedVideoUrl) { alert("Title aur Video Link compulsory hai!"); return; }
 
     try {
         await addDoc(collection(db, "dramas"), {
             title, category, poster, banner, description, showBanner,
-            video: uploadedVideoUrl, views: 0, createdAt: Date.now()
+            video: uploadedVideoUrl, 
+            views: 0, 
+            createdAt: Date.now()
         });
-        alert("Drama Published!");
+        alert("Drama Successfully Published!");
         location.reload(); 
     } catch (error) { alert("Error: " + error.message); }
 });
