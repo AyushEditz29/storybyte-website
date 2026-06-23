@@ -15,24 +15,21 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const WORKER_URL = "https://storybyte-streamtape.storybyte029.workers.dev/"; 
-let uploadedVideoUrl = "";
 
 document.getElementById("loginBtn").addEventListener("click", async () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, document.getElementById("email").value, document.getElementById("password").value);
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("uploadPanel").style.display = "block";
-    } catch (error) { alert("Login Error: " + error.message); }
+    } catch (e) { alert("Login Error: " + e.message); }
 });
 
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
-    if (!videoUrl) { alert("Link daalo!"); return; }
-
-    document.getElementById("uploadStatus").innerText = "Upload shuru ho raha hai...";
-    document.getElementById("uploadBtn").disabled = true;
+    const statusEl = document.getElementById("uploadStatus");
+    const linkEl = document.getElementById("generatedLink");
+    
+    statusEl.innerText = "Processing via Worker...";
 
     try {
         const res = await fetch(WORKER_URL, {
@@ -44,36 +41,27 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
 
         if(data.status === 200) {
             const remoteId = data.result.id;
-            
             const checkStatus = async () => {
-                const statusRes = await fetch(WORKER_URL, {
+                const sRes = await fetch(WORKER_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ action: "status", id: remoteId })
                 });
-                const statusData = await statusRes.json();
+                const sData = await sRes.json();
                 
-                // DATA FLEXIBILITY FIX: Status check
-                let item = null;
-                if(statusData.result) {
-                    item = statusData.result[remoteId] || Object.values(statusData.result)[0];
-                }
+                let item = sData.result ? (sData.result[remoteId] || Object.values(sData.result)[0]) : null;
                 
                 if(item && (item.status === "finished" || item.status === "success")) {
-                    uploadedVideoUrl = item.url || item.link || "";
-                    document.getElementById("uploadStatus").innerText = "Upload Completed!";
-                    document.getElementById("nextBtn").style.display = "block";
+                    linkEl.value = item.url || item.link || "";
+                    statusEl.innerText = "Upload Completed!";
                 } else {
-                    document.getElementById("uploadStatus").innerText = "Processing... (Please wait)";
+                    statusEl.innerText = "Processing... (Wait mat chhodo)";
                     setTimeout(checkStatus, 5000); 
                 }
             };
             checkStatus();
-        } else { 
-            alert("Error: " + (data.msg || "Server Error")); 
-            document.getElementById("uploadBtn").disabled = false; 
-        }
-    } catch (e) { alert("Error: " + e.message); document.getElementById("uploadBtn").disabled = false; }
+        } else { alert("Failed: " + data.msg); }
+    } catch (e) { alert("Error: " + e.message); }
 });
 
 document.getElementById("nextBtn").addEventListener("click", () => {
@@ -83,8 +71,13 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
-    if (!title || !uploadedVideoUrl) { alert("Data missing!"); return; }
-    await addDoc(collection(db, "dramas"), { title, video: uploadedVideoUrl, createdAt: Date.now() });
-    alert("Published!");
-    window.location.href = "dashboard.html";
+    const videoUrl = document.getElementById("generatedLink").value; // Input box se link utha raha hai
+    
+    if (!title || !videoUrl) { alert("Title ya Video Link missing hai!"); return; }
+    
+    await addDoc(collection(db, "dramas"), { 
+        title, video: videoUrl, createdAt: Date.now() 
+    });
+    alert("Drama Published!");
+    location.reload();
 });
