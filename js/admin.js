@@ -16,6 +16,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const WORKER_URL = "https://storybyte-streamtape.storybyte029.workers.dev/"; 
 
+// Login
 document.getElementById("loginBtn").addEventListener("click", async () => {
     try {
         await signInWithEmailAndPassword(auth, document.getElementById("email").value, document.getElementById("password").value);
@@ -24,12 +25,13 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (e) { alert("Login Error: " + e.message); }
 });
 
+// Upload
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
     const statusEl = document.getElementById("uploadStatus");
     const linkEl = document.getElementById("generatedLink");
     
-    statusEl.innerText = "Processing via Worker...";
+    statusEl.innerText = "Processing...";
 
     try {
         const res = await fetch(WORKER_URL, {
@@ -41,39 +43,40 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
 
         if(data.status === 200) {
             const remoteId = data.result.id;
-            const checkStatus = async () => {
+            const check = async () => {
                 const sRes = await fetch(WORKER_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ action: "status", id: remoteId })
                 });
                 const sData = await sRes.json();
-                
                 let item = sData.result ? (sData.result[remoteId] || Object.values(sData.result)[0]) : null;
                 
                 if(item && (item.status === "finished" || item.status === "success")) {
                     linkEl.value = item.url || item.link || "";
                     statusEl.innerText = "Upload Completed!";
                 } else {
-                    statusEl.innerText = "Processing... (Wait mat chhodo)";
-                    setTimeout(checkStatus, 5000); 
+                    statusEl.innerText = "Processing... (Streamtape se link copy karke box mein paste karlo)";
+                    setTimeout(check, 5000); 
                 }
             };
-            checkStatus();
-        } else { alert("Failed: " + data.msg); }
+            check();
+        }
     } catch (e) { alert("Error: " + e.message); }
 });
 
+// Next Step
 document.getElementById("nextBtn").addEventListener("click", () => {
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 });
 
+// Publish
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
-    const videoUrl = document.getElementById("generatedLink").value; // Input box se link utha raha hai
+    const videoUrl = document.getElementById("generatedLink").value; 
     
-    if (!title || !videoUrl) { alert("Title ya Video Link missing hai!"); return; }
+    if (!title || !videoUrl) { alert("Title ya Link missing hai!"); return; }
     
     await addDoc(collection(db, "dramas"), { 
         title, video: videoUrl, createdAt: Date.now() 
