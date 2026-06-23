@@ -7,27 +7,44 @@
 </head>
 <body>
     <div id="loginBox" class="panel">
+        <h1>Admin Login</h1>
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
         <button id="loginBtn">Login</button>
     </div>
 
     <div id="uploadPanel" class="panel" style="display:none;">
-        <h3>Remote Upload</h3>
+        <h1>Remote Upload</h1>
         <input type="text" id="manualVideoUrl" placeholder="Google Drive Link paste karein">
         <button id="uploadBtn">Start Remote Upload</button>
-        
-        <div id="uploadStatus" style="margin-top:10px; color:#ff9800;"></div>
-        
+        <div id="uploadStatus"></div>
         <input type="text" id="generatedLink" placeholder="Streamtape Link yahan generate hogi" readonly>
-        
-        <button id="nextBtn" style="background:#28a745;">Next (Publish Page)</button>
+        <button id="nextBtn">Next (Publish Page)</button>
     </div>
 
     <div id="adminPanel" class="panel" style="display:none;">
+        <h1>Publish Drama</h1>
+        <input type="text" id="finalVideoUrl" placeholder="Video URL (Auto-filled)" readonly>
         <input type="text" id="title" placeholder="Drama Title">
-        <input type="text" id="category" placeholder="Category">
+        
+        <select id="category">
+            <option value="Action">❤️ Romance</option>
+            <option value="Romance">👻 Horror</option>
+            <option value="Horror">💥 Action</option>
+            <option value="Drama">😀 Comedy</option>
+            <option value="Drama">🔪 Thriller</option>
+            <option value="Drama">👑 Drama</option>
+            <option value="Drama">🕵️ Mystery</option>
+            <option value="Drama">✨ Fantasy</option>
+        </select>
+
         <input type="text" id="poster" placeholder="Poster URL">
+        <input type="text" id="banner" placeholder="Banner URL">
+        
+        <label style="display:block; margin: 10px 0;">
+            <input type="checkbox" id="showBanner" style="width: auto;"> Show Banner
+        </label>
+
         <textarea id="description" placeholder="Description"></textarea>
         <button id="publishBtn">Publish Drama</button>
     </div>

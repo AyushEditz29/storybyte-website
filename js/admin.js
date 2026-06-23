@@ -25,14 +25,12 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (e) { alert("Login Error: " + e.message); }
 });
 
-// Upload
+// Upload Logic
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
     const statusEl = document.getElementById("uploadStatus");
     const linkEl = document.getElementById("generatedLink");
-    
     statusEl.innerText = "Processing...";
-
     try {
         const res = await fetch(WORKER_URL, {
             method: "POST",
@@ -40,7 +38,6 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
             body: JSON.stringify({ action: "upload", url: videoUrl })
         });
         const data = await res.json();
-
         if(data.status === 200) {
             const remoteId = data.result.id;
             const check = async () => {
@@ -51,12 +48,11 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
                 });
                 const sData = await sRes.json();
                 let item = sData.result ? (sData.result[remoteId] || Object.values(sData.result)[0]) : null;
-                
                 if(item && (item.status === "finished" || item.status === "success")) {
                     linkEl.value = item.url || item.link || "";
                     statusEl.innerText = "Upload Completed!";
                 } else {
-                    statusEl.innerText = "Processing... (Streamtape se link copy karke box mein paste karlo)";
+                    statusEl.innerText = "Processing... (Agar ruk gaya ho to manual copy paste karlo)";
                     setTimeout(check, 5000); 
                 }
             };
@@ -65,22 +61,30 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
     } catch (e) { alert("Error: " + e.message); }
 });
 
-// Next Step
+// Navigation: Link transfer to Publish Page
 document.getElementById("nextBtn").addEventListener("click", () => {
+    document.getElementById("finalVideoUrl").value = document.getElementById("generatedLink").value;
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 });
 
-// Publish
+// Publish Logic
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
-    const videoUrl = document.getElementById("generatedLink").value; 
+    const videoUrl = document.getElementById("finalVideoUrl").value;
     
-    if (!title || !videoUrl) { alert("Title ya Link missing hai!"); return; }
+    if (!title || !videoUrl) { alert("Title ya Video Link missing hai!"); return; }
     
     await addDoc(collection(db, "dramas"), { 
-        title, video: videoUrl, createdAt: Date.now() 
+        title: title,
+        category: document.getElementById("category").value,
+        poster: document.getElementById("poster").value,
+        banner: document.getElementById("banner").value,
+        showBanner: document.getElementById("showBanner").checked,
+        description: document.getElementById("description").value,
+        video: videoUrl,
+        createdAt: Date.now()
     });
-    alert("Drama Published!");
+    alert("Drama Successfully Published!");
     location.reload();
 });
