@@ -17,7 +17,6 @@ const auth = getAuth(app);
 const WORKER_URL = "https://storybyte-streamtape.storybyte029.workers.dev/"; 
 let uploadedVideoUrl = "";
 
-// LOGIN
 document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -28,16 +27,14 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } catch (error) { alert("Login Error: " + error.message); }
 });
 
-// UPLOAD PROCESS (Worker Integrated)
 document.getElementById("uploadBtn").addEventListener("click", async () => {
     let videoUrl = document.getElementById("manualVideoUrl").value;
-    if (!videoUrl) { alert("Drive link daalo!"); return; }
+    if (!videoUrl) { alert("Link daalo!"); return; }
 
-    document.getElementById("uploadStatus").innerText = "Cloudflare Worker processing...";
+    document.getElementById("uploadStatus").innerText = "Upload shuru ho raha hai...";
     document.getElementById("uploadBtn").disabled = true;
 
     try {
-        // 1. Upload Request
         const res = await fetch(WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -47,9 +44,7 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
 
         if(data.status === 200) {
             const remoteId = data.result.id;
-            document.getElementById("uploadStatus").innerText = "Upload Started...";
             
-            // 2. Status Loop
             const checkStatus = async () => {
                 const statusRes = await fetch(WORKER_URL, {
                     method: "POST",
@@ -58,26 +53,29 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
                 });
                 const statusData = await statusRes.json();
                 
-                const item = statusData.result ? statusData.result[remoteId] : null;
+                // DATA FLEXIBILITY FIX: Status check
+                let item = null;
+                if(statusData.result) {
+                    item = statusData.result[remoteId] || Object.values(statusData.result)[0];
+                }
                 
                 if(item && (item.status === "finished" || item.status === "success")) {
                     uploadedVideoUrl = item.url || item.link || "";
                     document.getElementById("uploadStatus").innerText = "Upload Completed!";
                     document.getElementById("nextBtn").style.display = "block";
                 } else {
-                    document.getElementById("uploadStatus").innerText = "Processing... (Waiting for Streamtape)";
+                    document.getElementById("uploadStatus").innerText = "Processing... (Please wait)";
                     setTimeout(checkStatus, 5000); 
                 }
             };
             checkStatus();
         } else { 
-            alert("Failed: " + (data.msg || "Unknown error")); 
+            alert("Error: " + (data.msg || "Server Error")); 
             document.getElementById("uploadBtn").disabled = false; 
         }
     } catch (e) { alert("Error: " + e.message); document.getElementById("uploadBtn").disabled = false; }
 });
 
-// NAVIGATION & PUBLISH
 document.getElementById("nextBtn").addEventListener("click", () => {
     document.getElementById("uploadPanel").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
@@ -85,12 +83,8 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 
 document.getElementById("publishBtn").addEventListener("click", async () => {
     const title = document.getElementById("title").value;
-    if (!title || !uploadedVideoUrl) { alert("Title aur Video Link fill karo!"); return; }
-    
-    await addDoc(collection(db, "dramas"), { 
-        title, video: uploadedVideoUrl, createdAt: Date.now() 
-    });
-    
-    alert("Drama Published Successfully!");
+    if (!title || !uploadedVideoUrl) { alert("Data missing!"); return; }
+    await addDoc(collection(db, "dramas"), { title, video: uploadedVideoUrl, createdAt: Date.now() });
+    alert("Published!");
     window.location.href = "dashboard.html";
 });
