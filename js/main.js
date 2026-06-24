@@ -299,6 +299,7 @@ container.innerHTML+=`
 });
 
 }
+
 document.querySelectorAll(".cat-btn")
 
 .forEach(btn=>{
@@ -309,16 +310,19 @@ const category=
 
 btn.dataset.cat;
 
+if(category==="All"){
+
+loadLatest();
+
+return;
+
+}
+
 loadCategory(category);
 
 });
 
 });
-
-if(category==="All"){
-loadLatest();
-return;
-}
 
 const searchInput=
 
