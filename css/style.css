@@ -1384,3 +1384,40 @@ background:transparent;
 cursor:pointer;
 
 }
+
+/* --- Mobile Polish Fixes --- */
+
+/* 1. Trending Section ko App jaisa Horizontal Scroll dena */
+.trending-cards {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 15px !important;
+    padding: 10px 15px !important;
+    scrollbar-width: none !important; /* Hide scrollbar */
+}
+
+/* 2. Cards ko mobile par behtar dikhane ke liye */
+@media (max-width: 768px) {
+    .cards {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* 2-2 ka grid */
+        gap: 14px !important;
+        padding: 0 15px !important;
+    }
+
+    .card {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .card img {
+        aspect-ratio: 2/3 !important; /* Poster ka sahi ratio */
+        object-fit: cover !important;
+    }
+}
+
+/* 3. Global Reset for Stability */
+html, body {
+    overflow-x: hidden; /* Horizontal scroll bar gayab karne ke liye */
+    width: 100%;
+}
