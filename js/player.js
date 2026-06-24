@@ -259,3 +259,27 @@ document.addEventListener(
 loadDrama
 
 );
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+const overlay=
+
+document.getElementById("playerOverlay");
+
+if(!overlay)return;
+
+let firstTap=true;
+
+overlay.addEventListener("click",()=>{
+
+if(firstTap){
+
+overlay.style.display="none";
+
+firstTap=false;
+
+}
+
+});
+
+});
