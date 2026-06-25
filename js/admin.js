@@ -137,7 +137,7 @@ const title =
 document.getElementById("title").value;
 
 const telegramFileId =
-document.getElementById("finalVideoUrl").value;
+document.getElementById("telegramFileId").value;
 
 if (!title || !telegramFileId) {
 

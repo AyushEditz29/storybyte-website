@@ -266,9 +266,9 @@ const snapshot=
 
 await getDocs(collection(db,"dramas"));
 
-const container=
+const container =
 
-document.getElementById("latestCards");
+document.getElementById("categoryCards");
 
 container.innerHTML="";
 

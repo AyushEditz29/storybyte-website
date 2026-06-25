@@ -1287,16 +1287,18 @@ a, a:visited, a:hover, a:active {
 }
 
 .player-section{
-    max-width:450px;
-    margin:auto;
+max-width:420px;
+margin:auto;
 }
 
 #player{
-    width:100%;
-    aspect-ratio:9/16;
-    border-radius:15px;
-    overflow:hidden;
-    background:#000;
+width:100%;
+height:auto;
+}
+
+.plyr{
+border-radius:12px;
+overflow:hidden;
 }
 
 /* --- Mobile Polish Fixes --- */

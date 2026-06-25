@@ -70,17 +70,17 @@ await fetch(
 const result =
 await res.json();
 
-const player =
-new Plyr("#player");
+if(!result.success){
+console.log(result);
+return;
+}
 
 player.source = {
-type:"video",
-sources:[
-{
-src:result.url,
-type:"video/mp4"
-}
-]
+  type: "video",
+  sources: [{
+    src: result.url,
+    type: "video/mp4"
+  }]
 };
 
 loadRelatedDramas(
