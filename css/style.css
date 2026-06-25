@@ -1287,13 +1287,14 @@ a, a:visited, a:hover, a:active {
 }
 
 .player-section{
-max-width:420px;
-margin:auto;
+max-width:400px;
+margin:0 auto;
+aspect-ratio: 9 / 16;
 }
 
 #player{
 width:100%;
-height:auto;
+height:100%;
 }
 
 .plyr{
