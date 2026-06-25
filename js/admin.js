@@ -89,7 +89,7 @@ document.getElementById("saveLinkBtn")
 .addEventListener("click", () => {
 
     telegramLink =
-    document.getElementById("telegramVideoLink")
+    document.getElementById("telegramFileId")
     .value.trim();
 
     if(!telegramLink){
