@@ -80,281 +80,48 @@ console.log(error);
 
 
 // ====================
-// REMOTE UPLOAD
-// ====================
-
-document.getElementById("uploadBtn")
-.addEventListener("click",async()=>{
-
-const videoUrl=
-document.getElementById("manualVideoUrl")
-.value.trim();
-
-const statusEl=
-document.getElementById("uploadStatus");
-
-const linkEl=
-document.getElementById("generatedLink");
-
-
-if(!videoUrl){
-
-alert("Video URL paste karo ❌");
-
-return;
-
-}
-
-
-statusEl.innerText=
-"⏳ Upload Starting...";
-
-
-try{
-
-
-const response=
-await fetch(
-
-WORKER_URL,
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-action:"upload",
-
-url:videoUrl
-
-})
-
-}
-
-);
-
-
-const data=
-await response.json();
-
-console.log(data);
-
-
-if(data.status!==200){
-
-statusEl.innerText=
-"❌ Upload Error";
-
-return;
-
-}
-
-
-const remoteId=
-
-data?.result?.id ||
-
-data?.id;
-
-
-if(!remoteId){
-
-statusEl.innerText=
-"❌ Remote ID Missing";
-
-return;
-
-}
-
-
-// ====================
-// CHECK STATUS
-// ====================
-
-const checkStatus=async()=>{
-
-
-const response=
-
-await fetch(
-
-WORKER_URL,
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-action:"status",
-
-id:remoteId
-
-})
-
-}
-
-);
-
-
-const statusData=
-
-await response.json();
-
-console.log(statusData);
-
-
-let item=
-
-
-statusData.result
-
-?
-
-(
-
-statusData.result[remoteId]
-
-||
-
-Object.values(
-
-statusData.result
-
-)[0]
-
-)
-
-:
-
-null;
-
-
-if(
-
-item &&
-
-(
-
-item.status==="finished"
-
-||
-
-item.status==="success"
-
-||
-
-item.status==="completed"
-
-)
-
-){
-
-linkEl.value=
-
-item.url
-
-||
-
-item.link
-
-||
-
-"";
-
-
-statusEl.innerText=
-
-"✅ Upload Completed";
-
-
-}
-
-else{
-
-
-statusEl.innerText=
-
-"⏳ Processing...";
-
-
-setTimeout(
-
-checkStatus,
-
-5000
-
-);
-
-
-}
-
-
-};
-
-
-checkStatus();
-
-
-}
-catch(error){
-
-console.log(error);
-
-statusEl.innerText=
-
-"❌ Upload Failed";
-
-}
-
-});
-
-
-// ====================
 // NEXT
 // ====================
+
+let telegramLink = "";
+
+document.getElementById("saveLinkBtn")
+.addEventListener("click", () => {
+
+    telegramLink =
+    document.getElementById("telegramVideoLink")
+    .value.trim();
+
+    if(!telegramLink){
+
+        alert("Telegram Link Paste Karo");
+
+        return;
+    }
+
+    document.getElementById("uploadStatus")
+    .innerText = "✅ Link Saved";
+
+});
 
 document.getElementById("nextBtn")
 .addEventListener("click",()=>{
 
-const link=
+    if(!telegramLink){
 
-document.getElementById("generatedLink")
-.value;
+        alert("Pehle Link Save Karo");
 
+        return;
+    }
 
-if(!link){
+    document.getElementById("finalVideoUrl")
+    .value = telegramLink;
 
-alert("Upload complete hone do ❌");
+    document.getElementById("uploadPanel")
+    .style.display = "none";
 
-return;
-
-}
-
-
-document.getElementById("finalVideoUrl")
-.value=link;
-
-
-document.getElementById("uploadPanel")
-.style.display="none";
-
-
-document.getElementById("adminPanel")
-.style.display="block";
+    document.getElementById("adminPanel")
+    .style.display = "block";
 
 });
 
@@ -369,8 +136,8 @@ document.getElementById("publishBtn")
 const title=
 document.getElementById("title").value;
 
-const telegramFileId=
-document.getElementById("telegramFileId").value;
+const video=
+document.getElementById("finalVideoUrl").value;
 
 if(!title || !telegramFileId){
 
@@ -405,7 +172,7 @@ document.getElementById("description").value,
 showBanner:
 document.getElementById("showBanner").checked,
 
-telegramFileId,
+video,
 
 views:0,
 
