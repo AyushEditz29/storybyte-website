@@ -131,30 +131,26 @@ document.getElementById("nextBtn")
 // ====================
 
 document.getElementById("publishBtn")
-.addEventListener("click",async()=>{
+.addEventListener("click", async () => {
 
-const title=
+const title =
 document.getElementById("title").value;
 
-const video=
+const telegramFileId =
 document.getElementById("finalVideoUrl").value;
 
-if(!title || !telegramFileId){
+if (!title || !telegramFileId) {
 
 alert("Title ya Telegram File ID missing ❌");
-
 return;
 
 }
 
-try{
+try {
 
 await addDoc(
-
-collection(db,"dramas"),
-
+collection(db, "dramas"),
 {
-
 title,
 
 category:
@@ -172,14 +168,12 @@ document.getElementById("description").value,
 showBanner:
 document.getElementById("showBanner").checked,
 
-video,
+telegramFileId,
 
-views:0,
+views: 0,
 
-createdAt:Date.now()
-
+createdAt: Date.now()
 }
-
 );
 
 alert("🎉 Drama Published");
@@ -190,7 +184,6 @@ location.reload();
 catch(error){
 
 alert("Publish Error ❌");
-
 console.log(error);
 
 }
