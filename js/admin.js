@@ -367,27 +367,20 @@ document.getElementById("publishBtn")
 .addEventListener("click",async()=>{
 
 const title=
+document.getElementById("title").value;
 
-document.getElementById("title")
-.value;
+const telegramFileId=
+document.getElementById("telegramFileId").value;
 
-const video=
+if(!title || !telegramFileId){
 
-document.getElementById("finalVideoUrl")
-.value;
-
-
-if(!title||!video){
-
-alert("Title ya Video missing ❌");
+alert("Title ya Telegram File ID missing ❌");
 
 return;
 
 }
 
-
 try{
-
 
 await addDoc(
 
@@ -398,26 +391,21 @@ collection(db,"dramas"),
 title,
 
 category:
-
 document.getElementById("category").value,
 
 poster:
-
 document.getElementById("poster").value,
 
 banner:
-
 document.getElementById("banner").value,
 
 description:
-
 document.getElementById("description").value,
 
 showBanner:
-
 document.getElementById("showBanner").checked,
 
-video,
+telegramFileId,
 
 views:0,
 
@@ -427,12 +415,9 @@ createdAt:Date.now()
 
 );
 
-
 alert("🎉 Drama Published");
 
-
 location.reload();
-
 
 }
 catch(error){

@@ -1,179 +1,95 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-
 getFirestore,
-
 doc,
-
 getDoc,
-
 collection,
-
 getDocs,
-
 updateDoc,
-
 increment
-
 }
-
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-
-const firebaseConfig={
-
+const firebaseConfig = {
 apiKey:"AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
-
 authDomain:"storybyteappin.firebaseapp.com",
-
 projectId:"storybyteappin",
-
 storageBucket:"storybyteappin.firebasestorage.app",
-
 messagingSenderId:"113135240391",
-
 appId:"1:113135240391:web:53586b59385268dfefeae2"
-
 };
 
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
+const WORKER_URL =
+"https://storybyte-adminbot.storybyte029.workers.dev";
 
-const app=initializeApp(firebaseConfig);
+const urlParams =
+new URLSearchParams(window.location.search);
 
-const db=getFirestore(app);
-
-
-
-const urlParams=
-
-new URLSearchParams(
-
-window.location.search
-
-);
-
-
-
-const dramaId=
-
+const dramaId =
 urlParams.get("id");
-
-
 
 async function loadDrama(){
 
-if(!dramaId)return;
-
-
+if(!dramaId) return;
 
 try{
 
-const docRef=
-
+const docRef =
 doc(db,"dramas",dramaId);
 
-
-
 await updateDoc(docRef,{
-
 views:increment(1)
-
 });
 
-
-
-const docSnap=
-
+const docSnap =
 await getDoc(docRef);
-
-
 
 if(docSnap.exists()){
 
-const data=
-
+const data =
 docSnap.data();
 
+document.getElementById("dramaTitle").innerText =
+data.title;
 
+document.getElementById("dramaStory").innerText =
+data.description;
 
-document.getElementById(
-
-"dramaTitle"
-
-).innerText=data.title;
-
-
-
-document.getElementById(
-
-"dramaStory"
-
-).innerText=data.description;
-
-
-
-document.getElementById(
-
-"viewCount"
-
-).innerText=
-
+document.getElementById("viewCount").innerText =
 (data.views+1)+" Views";
 
+const res =
+await fetch(
+`${WORKER_URL}?fileid=${data.telegramFileId}`
+);
 
+const result =
+await res.json();
 
-let streamtapeLink=
+const player =
+new Plyr("#player");
 
-data.video;
-
-
-
-if(
-
-streamtapeLink.includes("/v/")
-
-){
-
-const videoId=
-
-streamtapeLink
-
-.split("/v/")[1]
-
-.split("/")[0];
-
-
-
-streamtapeLink=
-
-`https://streamtape.com/e/${videoId}`;
-
+player.source = {
+type:"video",
+sources:[
+{
+src:result.url,
+type:"video/mp4"
 }
-
-
-
-document.getElementById(
-
-"streamtapeFrame"
-
-).src=
-
-streamtapeLink;
-
-
+]
+};
 
 loadRelatedDramas(
-
 data.category
-
 );
 
 }
 
 }
-
 catch(error){
 
 console.log(error);
@@ -182,50 +98,26 @@ console.log(error);
 
 }
 
-
-
 async function loadRelatedDramas(category){
 
-const snap=
-
+const snap =
 await getDocs(
-
 collection(db,"dramas")
-
 );
 
-
-
-const relatedBox=
-
-document.getElementById(
-
-"relatedCards"
-
-);
-
-
+const relatedBox =
+document.getElementById("relatedCards");
 
 relatedBox.innerHTML="";
 
-
-
 snap.forEach(doc=>{
 
-const drama=
-
+const drama =
 doc.data();
 
-
-
 if(
-
-drama.category===category
-
-&&
-
+drama.category===category &&
 doc.id!==dramaId
-
 ){
 
 relatedBox.innerHTML+=`
@@ -250,36 +142,7 @@ relatedBox.innerHTML+=`
 
 }
 
-
-
 document.addEventListener(
-
 "DOMContentLoaded",
-
 loadDrama
-
 );
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-const overlay=
-
-document.getElementById("playerOverlay");
-
-if(!overlay)return;
-
-let firstTap=true;
-
-overlay.addEventListener("click",()=>{
-
-if(firstTap){
-
-overlay.style.display="none";
-
-firstTap=false;
-
-}
-
-});
-
-});

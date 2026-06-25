@@ -426,33 +426,6 @@ font-size:18px;
 color:#ddd;
 }
 
-/* PLAYER */
-
-.player-section{
-
-padding:50px 20px;
-}
-
-.video-wrapper{
-
-width:340px;
-
-margin:auto;
-
-border-radius:25px;
-
-overflow:hidden;
-
-box-shadow:0 0 35px rgba(0,0,0,.6);
-}
-
-#player{
-
-width:100%;
-
-aspect-ratio:9/16;
-}
-
 /* BUTTONS */
 
 .video-actions{
@@ -1260,26 +1233,6 @@ cursor:pointer;
 
 /* Trending */
 
-.trending-cards{
-
-display:flex !important;
-
-overflow-x:auto;
-
-gap:15px;
-
-padding-bottom:10px;
-
-scrollbar-width:none;
-
-}
-
-.trending-cards::-webkit-scrollbar{
-
-display:none;
-
-}
-
 .trending-cards .card{
 
 flex:0 0 180px;
@@ -1321,6 +1274,7 @@ border-radius:18px;
 }
 
 /* Plyr ka color red set karne ke liye */
+
 :root {
     --plyr-color-main: #E50914; 
 }
@@ -1332,57 +1286,17 @@ a, a:visited, a:hover, a:active {
     outline: none;
 }
 
-/* --- Plyr UI Force Fix --- */
-.plyr {
-    width: 100% !important;
-    border-radius: 20px !important;
+.player-section{
+    max-width:450px;
+    margin:auto;
 }
 
-.plyr__controls {
-    display: flex !important;
-    opacity: 1 !important;
-}
-
-.video-wrapper{
-
-position:relative;
-
-width:100%;
-
-height:600px;
-
-overflow:hidden;
-
-}
-
-#streamtapeFrame{
-
-width:100%;
-
-height:100%;
-
-border:none;
-
-}
-
-#playerOverlay{
-
-position:absolute;
-
-top:0;
-
-left:0;
-
-width:100%;
-
-height:100%;
-
-z-index:999;
-
-background:transparent;
-
-cursor:pointer;
-
+#player{
+    width:100%;
+    aspect-ratio:9/16;
+    border-radius:15px;
+    overflow:hidden;
+    background:#000;
 }
 
 /* --- Mobile Polish Fixes --- */
@@ -1414,10 +1328,4 @@ cursor:pointer;
         aspect-ratio: 2/3 !important; /* Poster ka sahi ratio */
         object-fit: cover !important;
     }
-}
-
-/* 3. Global Reset for Stability */
-html, body {
-    overflow-x: hidden; /* Horizontal scroll bar gayab karne ke liye */
-    width: 100%;
 }
