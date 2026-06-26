@@ -62,26 +62,44 @@ data.description;
 document.getElementById("viewCount").innerText =
 (data.views+1)+" Views";
 
-const res =
-await fetch(
+const res = await fetch(
 `${WORKER_URL}?fileid=${data.telegramFileId}`
 );
 
-const result =
-await res.json();
+const result = await res.json();
 
 if(!result.success){
-console.log(result);
-return;
+    console.log(result);
+    return;
 }
 
-player.source = {
-  type: "video",
-  sources: [{
-    src: result.url,
-    type: "video/mp4"
-  }]
-};
+const player = new Plyr("#player",{
+    ratio:"9:16",
+    controls:[
+        "play-large", "play", "progress", "current-time", 
+        "mute", "volume", "settings", "fullscreen"
+    ]
+});
+
+// HLS aur MP4 dono ko handle karne ke liye update
+const videoSource = result.url;
+const videoElement = document.getElementById("player");
+
+if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(videoSource);
+    hls.attachMedia(videoElement);
+    // Plyr ke saath HLS sync karne ke liye
+    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        player.play();
+    });
+} else {
+    // Fallback: Agar HLS support na ho (jaise kuch browsers mein)
+    player.source = {
+        type: "video",
+        sources: [{ src: videoSource, type: "video/mp4" }]
+    };
+}
 
 loadRelatedDramas(
 data.category
