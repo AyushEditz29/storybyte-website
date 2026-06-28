@@ -64,27 +64,59 @@ async function loadDrama(){
             // ====================
             // DOWNLOAD BUTTON HANDLER
             // ====================
-            // Bunny.net fallback rule ke hisab se playlist.m3u8 ko play.mp4 se replace karke direct link banega
             const downloadBtn = document.getElementById("downloadBtn");
             if (downloadBtn) {
-                downloadBtn.addEventListener("click", (e) => {
+                downloadBtn.addEventListener("click", async (e) => {
                     e.preventDefault();
-                    const downloadUrl = videoSource.replace("playlist.m3u8", "play.mp4");
-                    window.open(downloadUrl, "_blank");
+                    
+                    if (videoSource && videoSource.includes("playlist.m3u8")) {
+                        // 1080p FHD download ke liye play_1080p.mp4 target kiya hai
+                        const directMp4Url = videoSource.replace("playlist.m3u8", "play_1080p.mp4"); 
+                        
+                        try {
+                            const response = await fetch(directMp4Url);
+                            if (!response.ok) throw new Error("1080p file not available");
+                            
+                            const blob = await response.blob();
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            
+                            const a = document.createElement("a");
+                            a.href = blobUrl;
+                            a.download = `${document.getElementById("dramaTitle").innerText || "StoryByte_1080p"}.mp4`;
+                            document.body.appendChild(a);
+                            a.click();
+                            
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(blobUrl);
+                            console.log("Direct 1080p Download Started! 🚀");
+                        } catch (error) {
+                            console.error("Blob download failed, opening fallback in new tab...", error);
+                            window.open(directMp4Url, "_blank");
+                        }
+                    }
                 });
             }
-
-            // Plyr Initialization with Menu settings Array
+            
+           // ====================
+            // ⚙️ PLYR INITIALIZATION (FIXED FOR QUALITY)
+            // ====================
             const player = new Plyr("#player", {
-                ratio: "9:16",
+                ratio: "9:16", // Vertical layout configuration
                 controls: [
                     "play-large", "play", "progress", "current-time", 
                     "mute", "volume", "settings", "fullscreen"
                 ],
-                settings: ["quality", "speed"]
+                settings: ["quality", "speed"],
+                quality: {
+                    default: 0,
+                    options: [0], 
+                    forced: true,
+                    onChange: (e) => updateQuality(e)
+                }
             });
-
-            // HLS Stream Controller + Fixed Timeout Delay Handler
+                
+            
+            // HLS Stream Controller + Dynamic Quality Menu
             if (Hls.isSupported()) {
                 hlsInstance = new Hls();
                 hlsInstance.loadSource(videoSource);
@@ -96,16 +128,11 @@ async function loadDrama(){
                         
                         if (availableQualities.length > 0) {
                             availableQualities.unshift(0); // 0 translates to 'Auto'
-                            player.config.quality = {
-                                default: 0,
-                                options: availableQualities,
-                                forced: true,
-                                onChange: (e) => updateQuality(e),
-                            };
-                            player.setup(); 
+                            player.config.quality.options = availableQualities;
+                            player.setup(); // Controls refresh trigger
                         }
-                    }, 200); // Quality tracks parse hone ka buffer timeout delay
-                    
+                    }, 300);
+                   
                     player.play();
                 });
 
