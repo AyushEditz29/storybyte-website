@@ -39,7 +39,6 @@ async function loadDrama(){
     try{
         const docRef = doc(db, "dramas", dramaId);
 
-        // Views automatic update increment counter
         await updateDoc(docRef, {
             views: increment(1)
         });
@@ -62,83 +61,60 @@ async function loadDrama(){
             }
 
             // ====================
-            // 🎯 FORCED DIRECT 1080P DOWNLOAD HANDLER (BLOB BYPASS)
+            // 🎯 INSTANT 1080P DOWNLOAD HANDLER (NO FETCH DELAY)
             // ====================
             const downloadBtn = document.getElementById("downloadBtn");
             if (downloadBtn) {
-                downloadBtn.addEventListener("click", async (e) => {
+                downloadBtn.addEventListener("click", (e) => {
                     e.preventDefault();
                     
                     if (videoSource && videoSource.includes("playlist.m3u8")) {
+                        // 1080p target link layout
                         const directMp4Url = videoSource.replace("playlist.m3u8", "play_1080p.mp4");
                         
-                        // Button state change taaki user ko pata chale downloading shuru ho gayi h
-                        const originalText = downloadBtn.innerText;
-                        downloadBtn.innerText = "⏳ Downloading...";
-                        downloadBtn.style.opacity = "0.6";
-
-                        try {
-                            // Fetch request browser bypass lagayega taaki player na khule
-                            const response = await fetch(directMp4Url);
-                            if (!response.ok) throw new Error("Network response error");
-
-                            const blob = await response.blob();
-                            const blobUrl = window.URL.createObjectURL(blob);
-                            
-                            const a = document.createElement("a");
-                            a.href = blobUrl;
-                            a.download = `${data.title || "StoryByte_1080p"}.mp4`;
-                            document.body.appendChild(a);
-                            a.click();
-                            
-                            // Cleanup resources
-                            document.body.removeChild(a);
-                            window.URL.revokeObjectURL(blobUrl);
-                        } catch (error) {
-                            console.error("Direct blob trigger failed, using anchor method...", error);
-                            // Fallback: Agar browser fetch security block kare toh normal clean link open hoga
-                            window.open(directMp4Url, "_blank");
-                        } finally {
-                            downloadBtn.innerText = originalText;
-                            downloadBtn.style.opacity = "1";
-                        }
+                        // Direct browser notification download trigger pipelines
+                        const a = document.createElement("a");
+                        a.href = directMp4Url;
+                        a.setAttribute("download", `${data.title || "StoryByte_1080p"}.mp4`);
+                        a.target = "_blank"; // New tab browser pipeline automation backup
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        
+                        console.log("Instant download triggered for: ", directMp4Url);
                     }
                 });
             }
 
             // ====================
-            // ⚙️ PLYR INITIALIZATION CONTROL
+            // ⚙️ PLYR + HLS HARD-SYNCHRONIZATION
             // ====================
-            playerInstance = new Plyr("#player", {
-                ratio: "9:16",
-                controls: [
-                    "play-large", "play", "progress", "current-time", 
-                    "mute", "volume", "settings", "fullscreen"
-                ],
-                settings: ["quality", "speed"]
-            });
-
-            // HLS Parsing with structural dynamic options injection
             if (Hls.isSupported()) {
                 hlsInstance = new Hls();
                 hlsInstance.loadSource(videoSource);
                 hlsInstance.attachMedia(videoElement);
                 
                 hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
-                    // Bunny se dynamic standard resolution levels access karna
                     const availableQualities = hlsInstance.levels.map((l) => l.height);
-                    
-                    if (availableQualities && availableQualities.length > 0) {
-                        availableQualities.unshift(0); // Add Auto mode index
+                    if (availableQualities.length > 0) {
+                        availableQualities.unshift(0); // 0 corresponds to 'Auto'
+                    }
 
-                        // Overwriting original configuration settings options arrays directly
-                        playerInstance.config.quality = {
+                    playerInstance = new Plyr("#player", {
+                        ratio: "9:16",
+                        controls: [
+                            "play-large", "play", "progress", "current-time", 
+                            "mute", "volume", "settings", "fullscreen"
+                        ],
+                        settings: ["quality", "speed"],
+                        quality: {
                             default: 0,
-                            options: availableQualities,
+                            options: availableQualities.length > 0 ? availableQualities : [0],
                             forced: true,
                             onChange: (e) => updateQuality(e),
-                        };
-                    }
+                        }
+                    });
+
                     playerInstance.play();
                 });
 
@@ -158,8 +134,14 @@ async function loadDrama(){
                 });
 
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                // For Native Apple iOS platforms
                 videoElement.src = videoSource;
+                playerInstance = new Plyr("#player", {
+                    ratio: "9:16",
+                    controls: [
+                        "play-large", "play", "progress", "current-time", 
+                        "mute", "volume", "settings", "fullscreen"
+                    ]
+                });
                 playerInstance.play();
             }
             
@@ -171,12 +153,11 @@ async function loadDrama(){
     }
 }
 
-// Quality switching router map
 function updateQuality(newQuality) {
     if (!hlsInstance) return;
     
     if (newQuality === 0) {
-        hlsInstance.currentLevel = -1; // Auto system settings tracking override
+        hlsInstance.currentLevel = -1; 
         console.log("Quality configured to Auto");
     } else {
         hlsInstance.levels.forEach((level, levelIndex) => {
