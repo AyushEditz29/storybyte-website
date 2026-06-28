@@ -1,237 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryByte</title>
+    <link rel="stylesheet" href="css/style.css">
 
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>StoryByte</title>
-
-<link rel="stylesheet" href="css/style.css">
-
+    <script>(function(s){s.dataset.zone='11213652',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
-
-<nav>
-
-<div class="logo">
-
-<img src="images/storybyte-logo.png.png" alt="StoryByte">
-
-</div>
-
-<a href="download.html">
-
-<button class="app-btn">
-
-Download App
-
-</button>
-
-</a>
-
-</nav>
-
-<!-- SEARCH -->
-
-<div class="search-box">
-
-<input type="text" placeholder="Search dramas...">
-
-</div>
-
-<!-- HERO -->
-
-<section class="hero-slider">
-
-<a id="bannerLink" href="#">
-
-<img
-id="heroBanner"
-
-src="images/banner1.jpg"
-
-alt="Story Banner">
-
-</a>
-
-</section>
-
-<!-- TRENDING -->
-
-<section class="section">
-
-<h2>🔥 Trending</h2>
-
-<div id="trendingCards"
-
-class="cards trending-cards">
-
-</div>
-
-</section> 
-
-<!-- CATEGORIES -->
-
-<section class="section">
-
-<h2>🎥 Categories</h2>
-
-<div class="categories">
-
-<button class="cat-btn" data-cat="Romance">❤️ Romance</button>
-
-<button class="cat-btn" data-cat="Revenge">😈 Revenge</button>
-
-<button class="cat-btn" data-cat="Horror">👻 Horror</button>
-
-<button class="cat-btn" data-cat="Action">💥 Action</button>
-
-<button class="cat-btn" data-cat="Comedy">😀 Comedy</button>
-
-<button class="cat-btn" data-cat="Thriller">🔪 Thriller</button>
-
-<button class="cat-btn" data-cat="Drama">👑 Drama</button>
-
-<button class="cat-btn" data-cat="Mystery">🕵️ Mystery</button>
-
-<button class="cat-btn" data-cat="Fantasy">✨ Fantasy</button>
-
-<button class="cat-btn" data-cat="All">🔥 All</button>
-
-</div>
-
-</section>
-
-
-<!-- LATEST -->
-
-<section class="section">
-
-<h2>🎬 Latest Uploads</h2>
-
-<div
-
-id="latestCards"
-
-class="cards">
-
-</div>
-
-<div
-
-id="allCards"
-
-class="cards hidden">
-
-</div>
-
-<div style="text-align:center; margin-top:30px;">
-
-<button
-
-id="viewAllBtn"
-
-class="watch-btn">
-
-View All Dramas →
-
-</button>
-
-</div>
-
-</section>
-
-<!-- FOOTER -->
-
-<!-- DOWNLOAD APP -->
-
-<section class="app-card">
-
-<div class="app-left">
-
-<h2>
-
-📱 Download StoryByte App
-
-</h2>
-
-<p>
-
-Install the Android app and watch short dramas anytime, anywhere.
-
-</p>
-
-<br>
-
-<a href="download.html">
-
-<button class="app-btn">
-
-Download App
-
-</button>
-
-</a>
-
-</div>
-
-</section>
-
-
-<footer class="footer">
-
-<img
-
-src="images/storybyte-logo.png.png"
-
-alt="StoryByte"
-
-class="footer-logo">
-
-<div class="footer-links">
-
-<a href="privacy.html">
-
-Privacy Policy
-
-</a>
-
-<a href="terms.html">
-
-Terms
-
-</a>
-
-<a href="disclaimer.html">
-
-Disclaimer
-
-</a>
-
-<a href="contact.html">
-
-Contact
-
-</a>
-
-</div>
-
-<p>
-
-© 2026 StoryByte. All Rights Reserved.
-
-</p>
-
-</footer>
-
-<script type="module" src="js/main.js"></script>
-
+    <nav>
+        <div class="logo">
+            <img src="images/storybyte-logo.png.png" alt="StoryByte">
+        </div>
+        <button id="appDownloadBtn" class="app-btn">
+            Download App
+        </button>
+    </nav>
+
+    <div class="search-box">
+        <input type="text" placeholder="Search dramas...">
+    </div>
+
+    <section class="hero-slider">
+        <a id="bannerLink" href="#">
+            <img id="heroBanner" src="images/banner1.jpg" alt="Story Banner">
+        </a>
+    </section>
+
+    <section class="section">
+        <h2>🔥 Trending</h2>
+        <div id="trendingCards" class="cards trending-cards"></div>
+    </section> 
+
+    <section class="section">
+        <h2>🎥 Categories</h2>
+        <div class="categories">
+            <button class="cat-btn" data-cat="Romance">❤️ Romance</button>
+            <button class="cat-btn" data-cat="Revenge">😈 Revenge</button>
+            <button class="cat-btn" data-cat="Horror">👻 Horror</button>
+            <button class="cat-btn" data-cat="Action">💥 Action</button>
+            <button class="cat-btn" data-cat="Comedy">😀 Comedy</button>
+            <button class="cat-btn" data-cat="Thriller">🔪 Thriller</button>
+            <button class="cat-btn" data-cat="Drama">👑 Drama</button>
+            <button class="cat-btn" data-cat="Mystery">🕵️ Mystery</button>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>🎬 Latest Uploads</h2>
+        <div id="latestCards" class="cards"></div>
+        <div id="allCards" class="cards hidden"></div>
+        <div style="text-align:center; margin-top:30px;">
+            <button id="viewAllBtn" class="watch-btn">
+                View All Dramas →
+            </button>
+        </div>
+    </section>
+
+    <section class="app-card">
+        <div class="app-left">
+            <h2>📱 Download StoryByte App</h2>
+            <p>Install the Android app and watch short dramas anytime, anywhere.</p>
+            <br>
+            <button id="appDownloadBtn" class="app-btn">
+                Download App
+            </button>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <img src="images/storybyte-logo.png.png" alt="StoryByte" class="footer-logo">
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms</a>
+            <a href="disclaimer.html">Disclaimer</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <p>© 2026 StoryByte. All Rights Reserved.</p>
+    </footer>
+
+    <script type="module" src="js/main.js"></script>
 </body>
-
 </html>

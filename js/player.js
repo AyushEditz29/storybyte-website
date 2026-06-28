@@ -1,3 +1,4 @@
+JavaScript
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
     getFirestore,
@@ -61,7 +62,7 @@ async function loadDrama(){
             }
 
             // ====================
-            // 🎯 INSTANT 1080P DOWNLOAD HANDLER (NO FETCH DELAY)
+            // 🎯 DOWNLOAD BUTTON HANDLER 
             // ====================
             const downloadBtn = document.getElementById("downloadBtn");
             if (downloadBtn) {
@@ -69,19 +70,13 @@ async function loadDrama(){
                     e.preventDefault();
                     
                     if (videoSource && videoSource.includes("playlist.m3u8")) {
-                        // 1080p target link layout
+                        // 1080p direct video link setup
                         const directMp4Url = videoSource.replace("playlist.m3u8", "play_1080p.mp4");
                         
-                        // Direct browser notification download trigger pipelines
-                        const a = document.createElement("a");
-                        a.href = directMp4Url;
-                        a.setAttribute("download", `${data.title || "StoryByte_1080p"}.mp4`);
-                        a.target = "_blank"; // New tab browser pipeline automation backup
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
+                        // User ko direct download link ke sath ad page timer par bhej dega
+                        window.location.href = `ad.html?next=${encodeURIComponent(directMp4Url)}`; //[cite: 1]
                         
-                        console.log("Instant download triggered for: ", directMp4Url);
+                        console.log("Redirecting to Ad page for 1080p download loop...");
                     }
                 });
             }
@@ -170,7 +165,7 @@ function updateQuality(newQuality) {
 }
 
 // ====================
-// LOAD RELATED DRAMAS
+// LOAD RELATED DRAMAS 
 // ====================
 async function loadRelatedDramas(category){
     try {
@@ -181,8 +176,11 @@ async function loadRelatedDramas(category){
         snap.forEach(doc => {
             const drama = doc.data();
             if(drama.category === category && doc.id !== dramaId){
+                // Dynamic link generation for related dramas via ad.html
+                const targetDramaLink = `drama.html?id=${doc.id}`;
+                
                 relatedBox.innerHTML += `
-                    <a href="drama.html?id=${doc.id}">
+                    <a href="ad.html?next=${encodeURIComponent(targetDramaLink)}"> <!--[cite: 1] -->
                         <div class="card">
                             <img src="${drama.poster}">
                             <h3>${drama.title}</h3>

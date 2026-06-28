@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StoryByte</title>
+    <title>StoryByte | Secure Gateway</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <section class="hero">
         <img src="images/storybyte-logo.png.png" style="height:90px; margin-bottom:25px;">
-        <h1>Advertisement</h1>
-        <p>Please wait...</p>
+        <h1>Checking Secure Link...</h1>
+        <p>Please wait while your content is loading.</p>
         <br>
         <h2 id="timer">5</h2>
         <br>
-        <button id="continueBtn" class="watch-btn" disabled>Continue</button>
+        <button id="continueBtn" class="watch-btn" disabled>Please Wait...</button>
     </section>
+
     <script>
         let seconds = 5;
         const timer = document.getElementById("timer");
         const btn = document.getElementById("continueBtn");
         const params = new URLSearchParams(window.location.search);
-        const next = params.get("next");
+        
+        // Dynamic destination parameters
+        const nextTarget = params.get("next"); 
+
+        // 🌟 MONETAG DIRECT LINK URL YAHAN PASTE KARNA
+        const monetagDirectLink = "https://omg10.com/4/11213653";
         
         const interval = setInterval(() => {
             seconds--;
@@ -29,12 +35,18 @@
             if(seconds <= 0){
                 clearInterval(interval);
                 btn.disabled = false;
-                btn.innerText = "Continue";
+                btn.innerText = "Continue 🔗";
             }
         }, 1000);
 
         btn.onclick = () => {
-            if(next) { window.location.href = next; }
+            if(nextTarget) { 
+                // 1. Pehle tab me Monetag ka High-CPM pop-under ya direct ad trigger hoga
+                window.open(monetagDirectLink, "https://omg10.com/4/11213653");
+                
+                // 2. Same tab me user direct apne content (Drama, Download Link, App APK) par chala jayega
+                window.location.href = decodeURIComponent(nextTarget); 
+            }
         };
     </script>
 </body>
