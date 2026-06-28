@@ -28,7 +28,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const dramaId = urlParams.get("id");
 
 let hlsInstance = null; 
-let playerInstance = null; // Plyr instance globally scope kiya
+let playerInstance = null;
 
 // ====================
 // LOAD DRAMA MAIN FUNCTION
@@ -39,7 +39,7 @@ async function loadDrama(){
     try{
         const docRef = doc(db, "dramas", dramaId);
 
-        // Views count update trigger
+        // Views automatic update increment counter
         await updateDoc(docRef, {
             views: increment(1)
         });
@@ -53,7 +53,6 @@ async function loadDrama(){
             document.getElementById("dramaStory").innerText = data.description;
             document.getElementById("viewCount").innerText = (data.views + 1) + " Views";
 
-            // Direct Bunny CDN HLS Link (.m3u8)
             const videoSource = data.videoUrl; 
             const videoElement = document.getElementById("player");
 
@@ -63,72 +62,86 @@ async function loadDrama(){
             }
 
             // ====================
-            // 🎯 1080p DIRECT DOWNLOAD HANDLER (FIXED ROUTE)
+            // 🎯 FORCED DIRECT 1080P DOWNLOAD HANDLER (BLOB BYPASS)
             // ====================
             const downloadBtn = document.getElementById("downloadBtn");
             if (downloadBtn) {
-                downloadBtn.addEventListener("click", (e) => {
+                downloadBtn.addEventListener("click", async (e) => {
                     e.preventDefault();
                     
                     if (videoSource && videoSource.includes("playlist.m3u8")) {
-                        // Bunny Stream se 1080p direct secure progressive download hit karne ke liye format rewrite
-                        const directMp4Url = videoSource.replace("playlist.m3u8", "play_1080p.mp4"); 
+                        const directMp4Url = videoSource.replace("playlist.m3u8", "play_1080p.mp4");
                         
-                        // Ek temporary anchor tag bana kar safe trigger lagayenge
-                        const a = document.createElement("a");
-                        a.href = directMp4Url;
-                        a.target = "_blank"; // Force trigger download box/new tab fallback
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        
-                        console.log("Direct 1080p Download Triggered: ", directMp4Url);
+                        // Button state change taaki user ko pata chale downloading shuru ho gayi h
+                        const originalText = downloadBtn.innerText;
+                        downloadBtn.innerText = "⏳ Downloading...";
+                        downloadBtn.style.opacity = "0.6";
+
+                        try {
+                            // Fetch request browser bypass lagayega taaki player na khule
+                            const response = await fetch(directMp4Url);
+                            if (!response.ok) throw new Error("Network response error");
+
+                            const blob = await response.blob();
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            
+                            const a = document.createElement("a");
+                            a.href = blobUrl;
+                            a.download = `${data.title || "StoryByte_1080p"}.mp4`;
+                            document.body.appendChild(a);
+                            a.click();
+                            
+                            // Cleanup resources
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(blobUrl);
+                        } catch (error) {
+                            console.error("Direct blob trigger failed, using anchor method...", error);
+                            // Fallback: Agar browser fetch security block kare toh normal clean link open hoga
+                            window.open(directMp4Url, "_blank");
+                        } finally {
+                            downloadBtn.innerText = originalText;
+                            downloadBtn.style.opacity = "1";
+                        }
                     }
                 });
             }
 
             // ====================
-            // ⚙️ PLYR INITIALIZATION (FIXED)
+            // ⚙️ PLYR INITIALIZATION CONTROL
             // ====================
             playerInstance = new Plyr("#player", {
-                ratio: "9:16", // Vertical view setup
+                ratio: "9:16",
                 controls: [
                     "play-large", "play", "progress", "current-time", 
                     "mute", "volume", "settings", "fullscreen"
                 ],
-                settings: ["quality", "speed"],
-                quality: {
-                    default: 0,
-                    options: [0], // Initially Auto setup default rakhenge
-                    forced: true,
-                    onChange: (e) => updateQuality(e)
-                }
+                settings: ["quality", "speed"]
             });
 
-            // HLS Stream Controller + Dynamic Quality Menu Loader
+            // HLS Parsing with structural dynamic options injection
             if (Hls.isSupported()) {
                 hlsInstance = new Hls();
                 hlsInstance.loadSource(videoSource);
                 hlsInstance.attachMedia(videoElement);
                 
                 hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
-                    setTimeout(() => {
-                        // Manifest parse hone ke baad automatic resolutions array fetch hoga
-                        const availableQualities = hlsInstance.levels.map((l) => l.height);
-                        
-                        if (availableQualities.length > 0) {
-                            availableQualities.unshift(0); // 0 translates to 'Auto'
-                            
-                            // Plyr ke active options control settings array ko full update kiya
-                            playerInstance.config.quality.options = availableQualities;
-                            playerInstance.setup(); // Controls refresh structure force trigger
-                        }
-                    }, 300); // Quality paths track karne ka standard buffer delay
+                    // Bunny se dynamic standard resolution levels access karna
+                    const availableQualities = hlsInstance.levels.map((l) => l.height);
                     
+                    if (availableQualities && availableQualities.length > 0) {
+                        availableQualities.unshift(0); // Add Auto mode index
+
+                        // Overwriting original configuration settings options arrays directly
+                        playerInstance.config.quality = {
+                            default: 0,
+                            options: availableQualities,
+                            forced: true,
+                            onChange: (e) => updateQuality(e),
+                        };
+                    }
                     playerInstance.play();
                 });
 
-                // Network fallback structural integration
                 hlsInstance.on(Hls.Events.ERROR, function (event, data) {
                     if (data.fatal) {
                         switch (data.type) {
@@ -145,17 +158,11 @@ async function loadDrama(){
                 });
 
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                // For Native iOS Safari
+                // For Native Apple iOS platforms
                 videoElement.src = videoSource;
                 playerInstance.play();
-            } else {
-                // Fallback MP4 target setup
-                playerInstance.source = {
-                    type: "video",
-                    sources: [{ src: videoSource, type: "video/mp4" }]
-                };
             }
-
+            
             loadRelatedDramas(data.category);
         }
     }
@@ -164,18 +171,18 @@ async function loadDrama(){
     }
 }
 
-// Quality switching method connection layer
+// Quality switching router map
 function updateQuality(newQuality) {
     if (!hlsInstance) return;
     
     if (newQuality === 0) {
-        hlsInstance.currentLevel = -1; // Switch back to Auto
-        console.log("Quality set to Auto");
+        hlsInstance.currentLevel = -1; // Auto system settings tracking override
+        console.log("Quality configured to Auto");
     } else {
         hlsInstance.levels.forEach((level, levelIndex) => {
             if (level.height === newQuality) {
                 hlsInstance.currentLevel = levelIndex;
-                console.log("Quality switched to: " + newQuality + "p");
+                console.log("Quality updated to: " + newQuality + "p");
             }
         });
     }
