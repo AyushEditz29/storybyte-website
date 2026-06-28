@@ -28,6 +28,8 @@ const WORKER_URL = "https://storybyte-adminbot.storybyte029.workers.dev";
 const urlParams = new URLSearchParams(window.location.search);
 const dramaId = urlParams.get("id");
 
+let hlsInstance = null; // HLS instance ko globally scope kiya taaki onChange access kar sake
+
 // ====================
 // LOAD DRAMA MAIN FUNCTION
 // ====================
@@ -37,7 +39,7 @@ async function loadDrama(){
     try{
         const docRef = doc(db, "dramas", dramaId);
 
-        // Views count increment
+        // Views increment call
         await updateDoc(docRef, {
             views: increment(1)
         });
@@ -51,53 +53,97 @@ async function loadDrama(){
             document.getElementById("dramaStory").innerText = data.description;
             document.getElementById("viewCount").innerText = (data.views + 1) + " Views";
 
-            // Firestore se direct Bunny Link fetch karenge
-            const rawVideoUrl = data.videoUrl; 
+            // Direct Bunny CDN Link load ho raha hai
+            const videoSource = data.videoUrl; 
+            const videoElement = document.getElementById("player");
 
-            if(!rawVideoUrl) {
+            if(!videoSource) {
                 console.error("Firestore me videoUrl missing hai! ❌");
                 return;
             }
 
-            // Cloudflare Worker ke zariye Bunny link ko mask kar rahe hain
-            const videoSource = `${WORKER_URL}?videoUrl=${encodeURIComponent(rawVideoUrl)}`;
-            const videoElement = document.getElementById("player");
-
-            // Plyr.io Initialize (9:16 vertical video ratio)
+            // Plyr Player Config Settings Menu ke sath
             const player = new Plyr("#player", {
                 ratio: "9:16",
                 controls: [
                     "play-large", "play", "progress", "current-time", 
                     "mute", "volume", "settings", "fullscreen"
-                ]
+                ],
+                settings: ["quality", "speed"]
             });
 
-            // HLS (.m3u8) Streaming Core Logic
+            // HLS (.m3u8) Streaming Logic + Quality Controller
             if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(videoSource);
-                hls.attachMedia(videoElement);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                hlsInstance = new Hls();
+                hlsInstance.loadSource(videoSource);
+                hlsInstance.attachMedia(videoElement);
+                
+                hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
+                    // Bunny se multi-quality resolutions pull karna
+                    const availableQualities = hlsInstance.levels.map((l) => l.height);
+                    availableQualities.unshift(0); // 0 corresponds to 'Auto'
+
+                    player.config.quality = {
+                        default: 0,
+                        options: availableQualities,
+                        forced: true,
+                        onChange: (e) => updateQuality(e),
+                    };
+
+                    player.setup(); 
                     player.play();
                 });
+
+                // Error handler implementation
+                hlsInstance.on(Hls.Events.ERROR, function (event, data) {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                hlsInstance.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hlsInstance.recoverMediaError();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                // For Safari / iOS native
+                // iOS Native Safari handling
                 videoElement.src = videoSource;
                 player.play();
             } else {
-                // Fallback option
+                // Normal MP4 playback backup
                 player.source = {
                     type: "video",
                     sources: [{ src: videoSource, type: "video/mp4" }]
                 };
             }
 
-            // Related dramas load karenge
             loadRelatedDramas(data.category);
         }
     }
     catch(error){
         console.error("Error loading drama:", error);
+    }
+}
+
+// Quality change routing execution function
+function updateQuality(newQuality) {
+    if (!hlsInstance) return;
+    
+    if (newQuality === 0) {
+        hlsInstance.currentLevel = -1; // Switch to Auto mode
+        console.log("Quality set to Auto");
+    } else {
+        hlsInstance.levels.forEach((level, levelIndex) => {
+            if (level.height === newQuality) {
+                hlsInstance.currentLevel = levelIndex;
+                console.log("Quality switched to: " + newQuality + "p");
+            }
+        });
     }
 }
 
@@ -128,5 +174,5 @@ async function loadRelatedDramas(category){
     }
 }
 
-// Event Listener on Load
+// Application setup startup trigger
 document.addEventListener("DOMContentLoaded", loadDrama);
