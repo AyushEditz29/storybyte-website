@@ -1,45 +1,45 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
-getFirestore,
-doc,
-getDoc,
-collection,
-getDocs,
-updateDoc,
-increment
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    getFirestore,
+    doc,
+    getDoc,
+    collection,
+    getDocs,
+    updateDoc,
+    increment
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// ====================
+// FIREBASE CONFIG
+// ====================
 const firebaseConfig = {
-apiKey:"AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
-authDomain:"storybyteappin.firebaseapp.com",
-projectId:"storybyteappin",
-storageBucket:"storybyteappin.firebasestorage.app",
-messagingSenderId:"113135240391",
-appId:"1:113135240391:web:53586b59385268dfefeae2"
+    apiKey: "AIzaSyCsGRspc2VB-xJq5XtmmkPKqOU90cdvvVI",
+    authDomain: "storybyteappin.firebaseapp.com",
+    projectId: "storybyteappin",
+    storageBucket: "storybyteappin.firebasestorage.app",
+    messagingSenderId: "113135240391",
+    appId: "1:113135240391:web:53586b59385268dfefeae2"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const WORKER_URL =
-"https://storybyte-adminbot.storybyte029.workers.dev";
+const WORKER_URL = "https://storybyte-adminbot.storybyte029.workers.dev";
+const urlParams = new URLSearchParams(window.location.search);
+const dramaId = urlParams.get("id");
 
-const urlParams =
-new URLSearchParams(window.location.search);
-
-const dramaId =
-urlParams.get("id");
-
+// ====================
+// LOAD DRAMA MAIN FUNCTION
+// ====================
 async function loadDrama(){
     if(!dramaId) return;
 
     try{
-        const docRef = doc(db,"dramas",dramaId);
+        const docRef = doc(db, "dramas", dramaId);
 
-        await updateDoc(docRef,{
-            views:increment(1)
+        // Views count increment
+        await updateDoc(docRef, {
+            views: increment(1)
         });
 
         const docSnap = await getDoc(docRef);
@@ -49,9 +49,9 @@ async function loadDrama(){
 
             document.getElementById("dramaTitle").innerText = data.title;
             document.getElementById("dramaStory").innerText = data.description;
-            document.getElementById("viewCount").innerText = (data.views+1)+" Views";
+            document.getElementById("viewCount").innerText = (data.views + 1) + " Views";
 
-            // database me save kiya hua direct Bunny link nikalenge
+            // Firestore se direct Bunny Link fetch karenge
             const rawVideoUrl = data.videoUrl; 
 
             if(!rawVideoUrl) {
@@ -63,29 +63,25 @@ async function loadDrama(){
             const videoSource = `${WORKER_URL}?videoUrl=${encodeURIComponent(rawVideoUrl)}`;
             const videoElement = document.getElementById("player");
 
-            // Plyr.io Initialize (9:16 vertical video ratio for reels/shorts)
-            const player = new Plyr("#player",{
-                ratio:"9:16",
-                controls:[
+            // Plyr.io Initialize (9:16 vertical video ratio)
+            const player = new Plyr("#player", {
+                ratio: "9:16",
+                controls: [
                     "play-large", "play", "progress", "current-time", 
                     "mute", "volume", "settings", "fullscreen"
                 ]
             });
 
-            // HLS (.m3u8) Stream handling through Worker
+            // HLS (.m3u8) Streaming Core Logic
             if (Hls.isSupported()) {
-                const hls = new Hls({
-                    xhrSetup: function (xhr, url) {
-                        // Secure streams handle karne ke liye headers configure kar sakte ho
-                    }
-                });
+                const hls = new Hls();
                 hls.loadSource(videoSource);
                 hls.attachMedia(videoElement);
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     player.play();
                 });
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                // iOS Safari/Apple devices support
+                // For Safari / iOS native
                 videoElement.src = videoSource;
                 player.play();
             } else {
@@ -96,59 +92,41 @@ async function loadDrama(){
                 };
             }
 
+            // Related dramas load karenge
             loadRelatedDramas(data.category);
         }
     }
     catch(error){
-        console.log(error);
+        console.error("Error loading drama:", error);
     }
 }
 
+// ====================
+// LOAD RELATED DRAMAS
+// ====================
 async function loadRelatedDramas(category){
+    try {
+        const snap = await getDocs(collection(db, "dramas"));
+        const relatedBox = document.getElementById("relatedCards");
+        relatedBox.innerHTML = "";
 
-const snap =
-await getDocs(
-collection(db,"dramas")
-);
-
-const relatedBox =
-document.getElementById("relatedCards");
-
-relatedBox.innerHTML="";
-
-snap.forEach(doc=>{
-
-const drama =
-doc.data();
-
-if(
-drama.category===category &&
-doc.id!==dramaId
-){
-
-relatedBox.innerHTML+=`
-
-<a href="drama.html?id=${doc.id}">
-
-<div class="card">
-
-<img src="${drama.poster}">
-
-<h3>${drama.title}</h3>
-
-</div>
-
-</a>
-
-`;
-
+        snap.forEach(doc => {
+            const drama = doc.data();
+            if(drama.category === category && doc.id !== dramaId){
+                relatedBox.innerHTML += `
+                    <a href="drama.html?id=${doc.id}">
+                        <div class="card">
+                            <img src="${drama.poster}">
+                            <h3>${drama.title}</h3>
+                        </div>
+                    </a>
+                `;
+            }
+        });
+    } catch (error) {
+        console.error("Error loading related dramas:", error);
+    }
 }
 
-});
-
-}
-
-document.addEventListener(
-"DOMContentLoaded",
-loadDrama
-);
+// Event Listener on Load
+document.addEventListener("DOMContentLoaded", loadDrama);
