@@ -24,11 +24,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const WORKER_URL = "https://storybyte-adminbot.storybyte029.workers.dev";
 const urlParams = new URLSearchParams(window.location.search);
 const dramaId = urlParams.get("id");
 
-let hlsInstance = null; // HLS instance ko globally scope kiya taaki onChange access kar sake
+let hlsInstance = null; 
 
 // ====================
 // LOAD DRAMA MAIN FUNCTION
@@ -39,7 +38,7 @@ async function loadDrama(){
     try{
         const docRef = doc(db, "dramas", dramaId);
 
-        // Views increment call
+        // Views count update trigger
         await updateDoc(docRef, {
             views: increment(1)
         });
@@ -53,7 +52,7 @@ async function loadDrama(){
             document.getElementById("dramaStory").innerText = data.description;
             document.getElementById("viewCount").innerText = (data.views + 1) + " Views";
 
-            // Direct Bunny CDN Link load ho raha hai
+            // Direct Bunny CDN HLS Link (.m3u8)
             const videoSource = data.videoUrl; 
             const videoElement = document.getElementById("player");
 
@@ -62,7 +61,20 @@ async function loadDrama(){
                 return;
             }
 
-            // Plyr Player Config Settings Menu ke sath
+            // ====================
+            // DOWNLOAD BUTTON HANDLER
+            // ====================
+            // Bunny.net fallback rule ke hisab se playlist.m3u8 ko play.mp4 se replace karke direct link banega
+            const downloadBtn = document.getElementById("downloadBtn");
+            if (downloadBtn) {
+                downloadBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const downloadUrl = videoSource.replace("playlist.m3u8", "play.mp4");
+                    window.open(downloadUrl, "_blank");
+                });
+            }
+
+            // Plyr Initialization with Menu settings Array
             const player = new Plyr("#player", {
                 ratio: "9:16",
                 controls: [
@@ -72,29 +84,32 @@ async function loadDrama(){
                 settings: ["quality", "speed"]
             });
 
-            // HLS (.m3u8) Streaming Logic + Quality Controller
+            // HLS Stream Controller + Fixed Timeout Delay Handler
             if (Hls.isSupported()) {
                 hlsInstance = new Hls();
                 hlsInstance.loadSource(videoSource);
                 hlsInstance.attachMedia(videoElement);
                 
                 hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
-                    // Bunny se multi-quality resolutions pull karna
-                    const availableQualities = hlsInstance.levels.map((l) => l.height);
-                    availableQualities.unshift(0); // 0 corresponds to 'Auto'
-
-                    player.config.quality = {
-                        default: 0,
-                        options: availableQualities,
-                        forced: true,
-                        onChange: (e) => updateQuality(e),
-                    };
-
-                    player.setup(); 
+                    setTimeout(() => {
+                        const availableQualities = hlsInstance.levels.map((l) => l.height);
+                        
+                        if (availableQualities.length > 0) {
+                            availableQualities.unshift(0); // 0 translates to 'Auto'
+                            player.config.quality = {
+                                default: 0,
+                                options: availableQualities,
+                                forced: true,
+                                onChange: (e) => updateQuality(e),
+                            };
+                            player.setup(); 
+                        }
+                    }, 200); // Quality tracks parse hone ka buffer timeout delay
+                    
                     player.play();
                 });
 
-                // Error handler implementation
+                // Global network/media errors fallback integration
                 hlsInstance.on(Hls.Events.ERROR, function (event, data) {
                     if (data.fatal) {
                         switch (data.type) {
@@ -111,11 +126,11 @@ async function loadDrama(){
                 });
 
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                // iOS Native Safari handling
+                // For Native iOS Safari
                 videoElement.src = videoSource;
                 player.play();
             } else {
-                // Normal MP4 playback backup
+                // Fallback MP4 target setup
                 player.source = {
                     type: "video",
                     sources: [{ src: videoSource, type: "video/mp4" }]
@@ -130,12 +145,12 @@ async function loadDrama(){
     }
 }
 
-// Quality change routing execution function
+// Quality mapping adjustment parser function
 function updateQuality(newQuality) {
     if (!hlsInstance) return;
     
     if (newQuality === 0) {
-        hlsInstance.currentLevel = -1; // Switch to Auto mode
+        hlsInstance.currentLevel = -1; // Default to Auto tracking mode
         console.log("Quality set to Auto");
     } else {
         hlsInstance.levels.forEach((level, levelIndex) => {
@@ -174,5 +189,5 @@ async function loadRelatedDramas(category){
     }
 }
 
-// Application setup startup trigger
+// DOM Init trigger callback
 document.addEventListener("DOMContentLoaded", loadDrama);
