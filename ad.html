@@ -5,8 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StoryByte | Secure Gateway</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Reward Alert Premium Bar Style */
+        .reward-bar {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+        .reward-icon {
+            width: 16px;
+            height: 16px;
+            background: #ccc;
+            border-radius: 50%;
+            display: inline-block;
+            text-align: center;
+            line-height: 16px;
+            font-size: 10px;
+        }
+    </style>
 </head>
 <body>
+
+    <!-- 🌟 TOP SIDE REWARD STATUS BAR -->
+    <div id="rewardStatus" class="reward-bar">
+        <span class="reward-icon">✕</span>
+        <span id="rewardText">Watching ad for reward...</span>
+    </div>
+
     <section class="hero">
         <img src="images/storybyte-logo.png.png" style="height:90px; margin-bottom:25px;">
         <h1>Checking Secure Link...</h1>
@@ -21,13 +60,13 @@
         let seconds = 5;
         const timer = document.getElementById("timer");
         const btn = document.getElementById("continueBtn");
+        const rewardText = document.getElementById("rewardText");
+        const rewardIcon = document.querySelector(".reward-icon");
         const params = new URLSearchParams(window.location.search);
-        
-        // Dynamic destination parameters
         const nextTarget = params.get("next"); 
 
-        // 🌟 MONETAG DIRECT LINK URL YAHAN PASTE KARNA
-        const monetagDirectLink = "https://omg10.com/4/11213653";
+        // 🌟 MONETAG DIRECT LINK
+        const monetagDirectLink = "https://omg10.com/4/11213930";
         
         const interval = setInterval(() => {
             seconds--;
@@ -36,15 +75,18 @@
                 clearInterval(interval);
                 btn.disabled = false;
                 btn.innerText = "Continue 🔗";
+                
+                // Change status to Reward Granted!
+                rewardText.innerText = "Reward granted";
+                rewardIcon.innerText = "✓";
+                rewardIcon.style.background = "#4CAF50";
+                rewardIcon.style.color = "#fff";
             }
         }, 1000);
 
         btn.onclick = () => {
             if(nextTarget) { 
-                // 1. Pehle tab me Monetag ka High-CPM pop-under ya direct ad trigger hoga
-                window.open(monetagDirectLink, "https://omg10.com/4/11213653");
-                
-                // 2. Same tab me user direct apne content (Drama, Download Link, App APK) par chala jayega
+                window.open(monetagDirectLink, "_blank");
                 window.location.href = decodeURIComponent(nextTarget); 
             }
         };
