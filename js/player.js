@@ -33,87 +33,75 @@ const dramaId =
 urlParams.get("id");
 
 async function loadDrama(){
+    if(!dramaId) return;
 
-if(!dramaId) return;
+    try{
+        const docRef = doc(db,"dramas",dramaId);
 
-try{
+        await updateDoc(docRef,{
+            views:increment(1)
+        });
 
-const docRef =
-doc(db,"dramas",dramaId);
+        const docSnap = await getDoc(docRef);
 
-await updateDoc(docRef,{
-views:increment(1)
-});
+        if(docSnap.exists()){
+            const data = docSnap.data();
 
-const docSnap =
-await getDoc(docRef);
+            document.getElementById("dramaTitle").innerText = data.title;
+            document.getElementById("dramaStory").innerText = data.description;
+            document.getElementById("viewCount").innerText = (data.views+1)+" Views";
 
-if(docSnap.exists()){
+            // database me save kiya hua direct Bunny link nikalenge
+            const rawVideoUrl = data.videoUrl; 
 
-const data =
-docSnap.data();
+            if(!rawVideoUrl) {
+                console.error("Firestore me videoUrl missing hai! ❌");
+                return;
+            }
 
-document.getElementById("dramaTitle").innerText =
-data.title;
+            // Cloudflare Worker ke zariye Bunny link ko mask kar rahe hain
+            const videoSource = `${WORKER_URL}?videoUrl=${encodeURIComponent(rawVideoUrl)}`;
+            const videoElement = document.getElementById("player");
 
-document.getElementById("dramaStory").innerText =
-data.description;
+            // Plyr.io Initialize (9:16 vertical video ratio for reels/shorts)
+            const player = new Plyr("#player",{
+                ratio:"9:16",
+                controls:[
+                    "play-large", "play", "progress", "current-time", 
+                    "mute", "volume", "settings", "fullscreen"
+                ]
+            });
 
-document.getElementById("viewCount").innerText =
-(data.views+1)+" Views";
+            // HLS (.m3u8) Stream handling through Worker
+            if (Hls.isSupported()) {
+                const hls = new Hls({
+                    xhrSetup: function (xhr, url) {
+                        // Secure streams handle karne ke liye headers configure kar sakte ho
+                    }
+                });
+                hls.loadSource(videoSource);
+                hls.attachMedia(videoElement);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    player.play();
+                });
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                // iOS Safari/Apple devices support
+                videoElement.src = videoSource;
+                player.play();
+            } else {
+                // Fallback option
+                player.source = {
+                    type: "video",
+                    sources: [{ src: videoSource, type: "video/mp4" }]
+                };
+            }
 
-const res = await fetch(
-`${WORKER_URL}?fileid=${data.telegramFileId}`
-);
-
-const result = await res.json();
-
-if(!result.success){
-    console.log(result);
-    return;
-}
-
-const player = new Plyr("#player",{
-    ratio:"9:16",
-    controls:[
-        "play-large", "play", "progress", "current-time", 
-        "mute", "volume", "settings", "fullscreen"
-    ]
-});
-
-// HLS aur MP4 dono ko handle karne ke liye update
-const videoSource = result.url;
-const videoElement = document.getElementById("player");
-
-if (Hls.isSupported()) {
-    const hls = new Hls();
-    hls.loadSource(videoSource);
-    hls.attachMedia(videoElement);
-    // Plyr ke saath HLS sync karne ke liye
-    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        player.play();
-    });
-} else {
-    // Fallback: Agar HLS support na ho (jaise kuch browsers mein)
-    player.source = {
-        type: "video",
-        sources: [{ src: videoSource, type: "video/mp4" }]
-    };
-}
-
-loadRelatedDramas(
-data.category
-);
-
-}
-
-}
-catch(error){
-
-console.log(error);
-
-}
-
+            loadRelatedDramas(data.category);
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 async function loadRelatedDramas(category){
