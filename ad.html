@@ -3,93 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StoryByte | Secure Gateway</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Loading Reward Content...</title>
+    
+    <!-- 🌟 REAL AD INJECTION: Bina naya tab khole isi page par premium overlay ad dikhane ke liye -->
+    <script>(function(s){s.dataset.zone='11213927',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
     <style>
-        /* Reward Alert Premium Bar Style */
-        .reward-bar {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            color: #000;
-            padding: 8px 16px;
-            border-radius: 20px;
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
             font-family: Arial, sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 8px;
-            z-index: 9999;
+            height: 100vh;
+        }
+        .ad-player-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 90vh;
+            background: #111;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .ad-top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        .timer-badge {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid rgba(255,255,255,0.2);
             transition: all 0.3s ease;
         }
-        .reward-icon {
-            width: 16px;
-            height: 16px;
-            background: #ccc;
+        .close-btn {
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            display: inline-block;
-            text-align: center;
-            line-height: 16px;
-            font-size: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: not-allowed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+        .close-btn.active {
+            background: #ff4757;
+            border-color: #ff4757;
+            cursor: pointer;
+            opacity: 1;
+            box-shadow: 0 0 10px #ff4757;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff4757;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <!-- 🌟 TOP SIDE REWARD STATUS BAR -->
-    <div id="rewardStatus" class="reward-bar">
-        <span class="reward-icon">✕</span>
-        <span id="rewardText">Watching ad for reward...</span>
+    <div class="ad-player-container">
+        <!-- Top Controls Layout -->
+        <div class="ad-top-bar">
+            <div id="rewardStatus" class="timer-badge">Streaming Ad: <span id="countdown">15</span>s</div>
+            <button id="closeAdBtn" class="close-btn" disabled>×</button>
+        </div>
+
+        <div class="loader"></div>
+        <h2>Playing Rewarded Video Ad...</h2>
+        <p style="color: #aaa; font-size: 14px;">Do not close this page. Your reward is being generated.</p>
     </div>
 
-    <section class="hero">
-        <img src="images/storybyte-logo.png.png" style="height:90px; margin-bottom:25px;">
-        <h1>Checking Secure Link...</h1>
-        <p>Please wait while your content is loading.</p>
-        <br>
-        <h2 id="timer">5</h2>
-        <br>
-        <button id="continueBtn" class="watch-btn" disabled>Please Wait...</button>
-    </section>
-
     <script>
-        let seconds = 5;
-        const timer = document.getElementById("timer");
-        const btn = document.getElementById("continueBtn");
-        const rewardText = document.getElementById("rewardText");
-        const rewardIcon = document.querySelector(".reward-icon");
-        const params = new URLSearchParams(window.location.search);
-        const nextTarget = params.get("next"); 
-
-        // 🌟 MONETAG DIRECT LINK
-        const monetagDirectLink = "https://omg10.com/4/11213930";
+        // Maine ad time 15 seconds kar diya hai taaki real video look aaye
+        let timeLeft = 15; 
+        const countdownEl = document.getElementById("countdown");
+        const statusEl = document.getElementById("rewardStatus");
+        const closeBtn = document.getElementById("closeAdBtn");
         
-        const interval = setInterval(() => {
-            seconds--;
-            timer.innerText = seconds;
-            if(seconds <= 0){
-                clearInterval(interval);
-                btn.disabled = false;
-                btn.innerText = "Continue 🔗";
+        const params = new URLSearchParams(window.location.search);
+        const nextTarget = params.get("next");
+
+        // Page load hote hi bina kisi click ke automatic loop timer shuru
+        const adTimer = setInterval(() => {
+            timeLeft--;
+            if (countdownEl) countdownEl.innerText = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(adTimer);
                 
-                // Change status to Reward Granted!
-                rewardText.innerText = "Reward granted";
-                rewardIcon.innerText = "✓";
-                rewardIcon.style.background = "#4CAF50";
-                rewardIcon.style.color = "#fff";
+                // Reward Status changes to Granted
+                statusEl.innerHTML = "✓ Reward granted";
+                statusEl.style.background = "#4CAF50";
+                statusEl.style.borderColor = "#4CAF50";
+                
+                // Active the cross close switch
+                closeBtn.disabled = false;
+                closeBtn.classList.add("active");
             }
         }, 1000);
 
-        btn.onclick = () => {
-            if(nextTarget) { 
-                window.open(monetagDirectLink, "_blank");
-                window.location.href = decodeURIComponent(nextTarget); 
+        closeBtn.onclick = () => {
+            if (!closeBtn.classList.contains("active")) return;
+            if (nextTarget) {
+                // User direct usi tab mein bina naye page par bhatke apne video par chala jayega
+                window.location.href = decodeURIComponent(nextTarget);
             }
         };
     </script>
+
 </body>
 </html>

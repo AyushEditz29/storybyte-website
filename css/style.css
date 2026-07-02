@@ -1,1334 +1,1841 @@
-*{
+*,
+*::before,
+*::after{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, sans-serif;
+}
+
+:root{
+
+    --bg:#000;
+    --card:#111;
+    --card2:#181818;
+
+    --red:#ff1a1a;
+    --redHover:#ff3434;
+
+    --white:#fff;
+    --gray:#c5c5c5;
+    --gray2:#777;
+
+    --radius:16px;
+
+    --shadow:
+        0 8px 20px rgba(0,0,0,.45);
+
+    --transition:.30s ease;
+
+}
+
+html{
+
+    scroll-behavior:smooth;
+
 }
 
 body{
+
     background:#000;
+
     color:#fff;
+
+    font-family:
+        Inter,
+        Poppins,
+        Arial,
+        sans-serif;
+
+    overflow-x:hidden;
+
+    -webkit-font-smoothing:antialiased;
+
 }
 
-/* NAVBAR */
+/* Scrollbar */
 
-nav{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:20px 50px;
-    background:#111;
+::-webkit-scrollbar{
+
+    width:6px;
+    height:6px;
+
 }
 
-.logo img{
-    height:60px;
+::-webkit-scrollbar-track{
+
+    background:#000;
+
 }
 
-.app-btn{
-    background:#E50914;
-    color:white;
-    border:none;
-    padding:12px 22px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
-    transition:.3s;
-}
+::-webkit-scrollbar-thumb{
 
-.app-btn:hover{
-    transform:scale(1.05);
-}
-
-/* SEARCH */
-
-.search-box{
-    text-align:center;
-    margin-top:20px;
-}
-
-.search-box input{
-    width:80%;
-    max-width:650px;
-    padding:16px 22px;
-    border:none;
-    border-radius:40px;
-    background:#1f1f1f;
-    color:white;
-    outline:none;
-    font-size:16px;
-}
-
-/* HERO */
-
-.hero{
-    text-align:center;
-    min-height:500px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-}
-
-.hero h1{
-    font-size:72px;
-    line-height:1.1;
-    margin-bottom:20px;
-}
-
-.hero p{
-    color:#aaa;
-    margin-bottom:25px;
-}
-
-.watch-btn{
-    background:#E50914;
-    color:white;
-    border:none;
-    padding:15px 30px;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:16px;
-    transition:.3s;
-}
-
-.watch-btn:hover{
-    transform:scale(1.05);
-}
-
-/* FEATURED */
-
-.featured{
-    width:90%;
-    max-width:1200px;
-    margin:50px auto;
-    padding:80px 40px;
+    background:#2d2d2d;
     border-radius:20px;
-    background:linear-gradient(135deg,#1a1a1a,#2d2d2d);
-    text-align:center;
-}
-
-.featured h2{
-    font-size:50px;
-    margin-bottom:15px;
-}
-
-.featured p{
-    color:#ddd;
-    margin-bottom:25px;
-}
-
-/* SECTION */
-
-.section{
-    padding:40px;
-}
-
-.section h2{
-    font-size:52px;
-    margin-bottom:25px;
-}
-
-/* CATEGORIES */
-
-.categories{
-
-display:flex;
-
-gap:20px;
-
-overflow-x:auto;
-
-overflow-y:hidden;
-
-flex-wrap:nowrap;
-
-padding:10px 0 20px;
-
-scrollbar-width:none;
 
 }
 
-.categories::-webkit-scrollbar{
+::-webkit-scrollbar-thumb:hover{
 
-display:none;
-
-}
-
-.categories button{
-
-background:#111111;
-
-color:#ffffff;
-
-border:1px solid #222222;
-
-border-radius:18px;
-
-padding:18px 28px;
-
-font-size:26px;
-
-font-weight:700;
-
-min-width:210px;
-
-height:80px;
-
-cursor:pointer;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-gap:14px;
-
-flex-shrink:0;
-
-transition:.3s;
+    background:#444;
 
 }
 
-.categories button:hover{
+img{
 
-background:#1a1a1a;
+    display:block;
 
-transform:translateY(-3px);
-
-border-color:#333333;
-
-}
-
-/* CARDS */
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:20px;
-}
-
-.card{
     width:100%;
-    height:320px;
-    background:#1a1a1a;
-    border-radius:15px;
-    overflow:hidden;
-    cursor:pointer;
-    transition:.3s;
+
+    user-select:none;
+
+    -webkit-user-drag:none;
+
 }
 
-.card:hover{
-    transform:translateY(-8px);
-}
+a{
 
-.card img{
-    width:100%;
-    height:260px;
-    object-fit:cover;
-}
+    color:inherit;
 
-.card h3{
-    text-align:center;
-    padding:15px;
-}
-
-/* APP SECTION */
-
-.app-card{
-    width:90%;
-    max-width:1200px;
-    margin:60px auto;
-    background:#151515;
-    border-radius:20px;
-    padding:40px;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.app-left h2{
-    font-size:50px;
-    margin-bottom:15px;
-}
-
-.app-left p{
-    color:#bbb;
-}
-
-.phone-icon{
-font-size:140px;
-flex-shrink:0;
-}
-
-/* FOOTER */
-
-.footer{
-    background:#111;
-    text-align:center;
-    padding:50px 20px;
-    margin-top:60px;
-}
-
-.footer-logo{
-    height:70px;
-    margin-bottom:20px;
-}
-
-.footer-links{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:20px;
-    margin-bottom:20px;
-}
-
-.footer-links a{
-    color:white;
     text-decoration:none;
-}
-
-.footer-links a:hover{
-    color:#E50914;
-}
-
-/* MOBILE */
-
-@media (max-width:768px){
-
-nav{
-padding:15px 20px;
-}
-
-.hero h1{
-font-size:38px;
-}
-
-.section{
-padding:25px;
-}
-
-.cards{
-grid-template-columns:repeat(2,1fr);
-gap:15px;
-}
-
-.card{
-height:260px;
-}
-
-.card img{
-
-width:100%;
-
-aspect-ratio:2/3;
-
-height:auto;
-
-object-fit:cover;
-
-display:block;
-
-}
-
-
-.categories button{
-width:100%;
-max-width:180px;
-font-size:16px;
-}
-
-.app-card{
-flex-direction:column;
-text-align:center;
-}
-
-.phone-icon{
-font-size:90px;
-margin-top:20px;
-}
-
-.video-wrapper{
-width:280px;
-}
-
-}
-
-/* DRAMA PAGE */
-
-/* ================= DRAMA PAGE ================= */
-
-.drama-hero{
-
-height:500px;
-
-background:linear-gradient(
-rgba(0,0,0,.55),
-rgba(0,0,0,.85)
-);
-
-position:relative;
-
-display:flex;
-
-flex-direction:column;
-
-justify-content:center;
-
-align-items:center;
-
-text-align:center;
-
-padding:20px;
-}
-
-.overlay-nav{
-
-position:absolute;
-
-top:0;
-
-left:0;
-
-width:100%;
-
-padding:20px 50px;
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-z-index:10;
-}
-
-.drama-overlay h1{
-
-font-size:65px;
-
-margin-bottom:20px;
-}
-
-.drama-meta{
-
-display:flex;
-
-gap:25px;
-
-flex-wrap:wrap;
-
-justify-content:center;
-
-font-size:18px;
-
-color:#ddd;
-}
-
-/* BUTTONS */
-
-.video-actions{
-
-display:flex;
-
-justify-content:center;
-
-gap:15px;
-
-flex-wrap:wrap;
-
-margin:40px 0;
-}
-
-.action-btn{
-
-background:#161616;
-
-color:white;
-
-border:1px solid #333;
-
-padding:14px 26px;
-
-border-radius:14px;
-
-cursor:pointer;
-
-font-size:16px;
-
-transition:.3s;
-}
-
-.action-btn:hover{
-
-background:#E50914;
-
-border-color:#E50914;
-}
-
-/* STORY */
-
-.story-box{
-
-width:90%;
-
-max-width:1100px;
-
-margin:50px auto;
-
-background:#111;
-
-padding:35px;
-
-border-radius:20px;
-}
-
-.story-box h2{
-
-font-size:40px;
-
-margin-bottom:20px;
-}
-
-.story-box p{
-
-line-height:1.8;
-
-color:#bbb;
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-.overlay-nav{
-
-padding:15px 20px;
-}
-
-.drama-overlay h1{
-
-font-size:36px;
-}
-
-.drama-meta{
-
-font-size:14px;
-
-gap:12px;
-}
-
-.video-wrapper{
-
-width:280px;
-}
-
-.story-box{
-
-padding:25px;
-}
-
-.story-box h2{
-
-font-size:30px;
-}
-
-}
-
-
-/* ======================================= */
-/* DOWNLOAD PAGE */
-/* ======================================= */
-
-.download-page{
-
-width:90%;
-
-max-width:1200px;
-
-margin:60px auto;
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-gap:50px;
-
-}
-
-.download-left{
-
-flex:1;
-
-}
-
-.download-left h1{
-
-font-size:56px;
-
-margin-bottom:20px;
-
-}
-
-.download-left p{
-
-color:#bbb;
-
-margin-bottom:25px;
-
-font-size:18px;
-
-}
-
-.download-left ul{
-
-list-style:none;
-
-}
-
-.download-left li{
-
-font-size:20px;
-
-margin-bottom:15px;
-
-}
-
-.download-info{
-
-margin-top:25px;
-
-line-height:2;
-
-}
-
-.download-app-btn{
-
-background:#E50914;
-
-color:#fff;
-
-border:none;
-
-padding:16px 30px;
-
-border-radius:12px;
-
-font-size:18px;
-
-cursor:pointer;
-
-transition:.3s;
-
-}
-
-.download-app-btn:hover{
-
-transform:scale(1.05);
-
-}
-
-.download-right{
-
-flex:1;
-
-display:flex;
-
-justify-content:center;
-
-}
-
-.mobile-mockup{
-
-width:260px;
-
-height:520px;
-
-background:#151515;
-
-border-radius:35px;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-font-size:120px;
-
-border:4px solid #333;
-
-}
-
-.install-box{
-
-width:90%;
-
-max-width:1200px;
-
-margin:60px auto;
-
-}
-
-.install-box h2{
-
-font-size:42px;
-
-margin-bottom:30px;
-
-}
-
-.install-steps{
-
-display:grid;
-
-grid-template-columns:repeat(4,1fr);
-
-gap:20px;
-
-}
-
-.step{
-
-background:#151515;
-
-padding:30px;
-
-border-radius:18px;
-
-text-align:center;
-
-font-size:20px;
-
-}
-
-/* ======================================= */
-/* POLICY PAGE */
-/* ======================================= */
-
-.policy-page{
-
-width:90%;
-
-max-width:1000px;
-
-margin:60px auto;
-
-}
-
-.policy-page h1{
-
-font-size:60px;
-
-margin-bottom:30px;
-
-}
-
-.policy-page h2{
-
-font-size:32px;
-
-margin-top:40px;
-
-margin-bottom:15px;
-
-}
-
-.policy-page p{
-
-font-size:18px;
-
-line-height:1.9;
-
-color:#bbb;
-
-}
-
-/* ======================================= */
-/* CONTACT PAGE */
-/* ======================================= */
-
-.contact-page{
-
-width:90%;
-
-max-width:1000px;
-
-margin:60px auto;
-
-text-align:center;
-
-}
-
-.contact-page h1{
 
-font-size:60px;
-
-margin-bottom:20px;
-
-}
-
-.contact-page p{
-
-font-size:18px;
-
-color:#bbb;
-
-}
-
-.contact-card{
-
-background:#151515;
-
-padding:30px;
-
-border-radius:20px;
-
-margin-top:25px;
-
-}
-
-.contact-card h3{
-
-font-size:28px;
-
-margin-bottom:15px;
-
-}
-
-/* ======================================= */
-/* MOBILE RESPONSIVE */
-/* ======================================= */
-
-@media (max-width:768px){
-
-.download-page{
-
-flex-direction:column;
-
-text-align:center;
-
-}
-
-.download-left h1{
-
-font-size:36px;
-
-}
-
-.mobile-mockup{
-
-width:220px;
-
-height:440px;
-
-font-size:90px;
-
-}
-
-.install-steps{
-
-grid-template-columns:1fr;
-
-}
-
-.policy-page h1,
-
-.contact-page h1{
-
-font-size:36px;
-
-}
-
-.policy-page h2{
-
-font-size:24px;
-
-}
-
-}
-
-/* ======================================= */
-/* MOBILE FIXES - STORYBYTE */
-/* ======================================= */
-
-html,
-body{
-
-width:100%;
-
-max-width:100%;
-
-overflow-x:hidden;
-
-}
-
-body{
-
-position:relative;
-
-}
-
-*{
-
-box-sizing:border-box;
-
-}
-
-/* NAVBAR */
-
-@media(max-width:768px){
-
-nav{
-
-padding:15px;
-
-gap:15px;
-
-flex-wrap:wrap;
-
-}
-
-.logo img{
-
-height:45px;
-
-}
-
-}
-
-/* HERO */
-
-@media(max-width:768px){
-
-.hero{
-
-padding:30px 20px;
-
-min-height:400px;
-
-}
-
-.hero h1{
-
-font-size:38px;
-
-line-height:1.2;
-
-}
-
-.hero p{
-
-font-size:15px;
-
-}
-
-}
-
-/* SECTIONS */
-
-@media(max-width:768px){
-
-.section{
-
-padding:25px 15px;
-
-}
-
-.section h2{
-
-font-size:34px;
-
-}
-
-}
-
-/* DRAMA CARDS */
-
-.hero-slider img{
-
-width:100%;
-
-aspect-ratio:1920/700;
-
-object-fit:cover;
-
-}
-
-.card{
-
-border-radius:18px;
-
-overflow:hidden;
-
-}
-
-.card img{
-
-width:100%;
-
-aspect-ratio:2/3;
-
-object-fit:cover;
-
 }
 
-@media(max-width:768px){
+button{
 
-.cards{
+    font-family:inherit;
 
-display:grid;
+    border:none;
 
-grid-template-columns:repeat(2,1fr);
+    outline:none;
 
-gap:14px;
-
-}
-
-.card{
-
-width:100%;
-
-height:auto;
-
-}
-
-.card h3{
-
-font-size:16px;
-
-padding:12px;
-
-}
-
-}
-
-/* CATEGORIES */
-
-@media(max-width:768px){
-
-.categories{
-
-display:flex;
-
-overflow-x:auto;
-
-overflow-y:hidden;
-
-flex-wrap:nowrap;
-
-gap:15px;
-
-padding-bottom:10px;
-
-justify-content:flex-start;
-
-scrollbar-width:none;
-
-}
-
-.categories::-webkit-scrollbar{
-
-display:none;
-
-}
-
-.categories button{
-
-min-width:170px;
-
-height:70px;
-
-font-size:22px;
-
-flex-shrink:0;
-
-white-space:nowrap;
-
-}
-
-}
-
-/* APP SECTION */
-
-@media(max-width:768px){
-
-.app-card{
-
-flex-direction:column;
-
-text-align:center;
-
-padding:25px;
-
-}
-
-.app-left h2{
-
-font-size:34px;
-
-}
-
-.phone-icon{
-
-font-size:90px;
-
-margin-top:20px;
-
-}
-
-}
-
-/* DOWNLOAD PAGE */
-
-@media(max-width:768px){
-
-.download-page{
-
-flex-direction:column;
-
-text-align:center;
-
-}
-
-.download-left h1{
-
-font-size:36px;
-
-}
-
-.mobile-mockup{
-
-width:220px;
-
-height:440px;
-
-font-size:90px;
-
-}
-
-}
-
-/* POLICY + CONTACT */
-
-@media(max-width:768px){
-
-.policy-page h1,
-
-.contact-page h1{
-
-font-size:36px;
-
-}
-
-.policy-page h2{
-
-font-size:24px;
-
-}
-
-}
-
-/* DRAMA PAGE */
-
-@media(max-width:768px){
-
-.drama-hero{
-
-height:auto;
-
-padding:80px 20px;
-
-}
-
-.drama-overlay h1{
-
-font-size:34px;
-
-}
-
-.drama-meta{
-
-font-size:14px;
-
-gap:10px;
-
-}
-
-.story-box{
-
-padding:25px;
-
-}
-
-.story-box h2{
-
-font-size:28px;
-
-}
-
-.video-wrapper{
-
-width:280px;
-
-}
-
-}
-
-/* FOOTER */
-
-@media(max-width:768px){
-
-.footer-links{
-
-gap:12px;
-
-font-size:14px;
-
-}
+    cursor:pointer;
 
 }
 
 .hidden{
 
-display:none;
+    display:none;
+
+}
+
+/* ===========================================
+   NAVBAR
+=========================================== */
+
+nav{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:999;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:14px 18px;
+
+    background:#111;
+
+    box-shadow:0 3px 15px rgba(0,0,0,.45);
+
+}
+
+.logo img{
+
+    width:125px;
+
+    height:auto;
+
+}
+
+/* Download Button */
+
+.app-btn{
+
+    background:linear-gradient(90deg,#ff1a1a,#ff4040);
+
+    color:#fff;
+
+    padding:10px 18px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    transition:.30s;
+
+    box-shadow:0 5px 18px rgba(255,0,0,.25);
+
+}
+
+.app-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:#ff2b2b;
+
+}
+
+.app-btn:active{
+
+    transform:scale(.96);
 
 }
 
 
-/* ===== FINAL MOBILE FIX ===== */
+/* ===========================================
+   SEARCH BAR
+=========================================== */
+
+.search-box{
+
+    width:100%;
+
+    padding:18px;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    max-width:700px;
+
+    display:block;
+
+    margin:auto;
+
+    height:48px;
+
+    padding:0 18px;
+
+    border-radius:50px;
+
+    border:none;
+
+    outline:none;
+
+    background:#161616;
+
+    color:#fff;
+
+    font-size:15px;
+
+    transition:.30s;
+
+}
+
+.search-box input::placeholder{
+
+    color:#8b8b8b;
+
+}
+
+.search-box input:focus{
+
+    background:#1f1f1f;
+
+    box-shadow:0 0 0 2px rgba(255,0,0,.35);
+
+}
+
+
+/* ===========================================
+   SECTION TITLE
+=========================================== */
+
+.section{
+
+    padding:0 18px;
+
+    margin-top:28px;
+
+}
+
+.section h2{
+
+    font-size:24px;
+
+    margin-bottom:18px;
+
+    font-weight:700;
+
+}
+
+
+/* ===========================================
+   MOBILE
+=========================================== */
+
+@media(max-width:768px){
+
+.logo img{
+
+    width:105px;
+
+}
+
+nav{
+
+    padding:12px 14px;
+
+}
+
+.app-btn{
+
+    padding:8px 14px;
+
+    font-size:11px;
+
+}
+
+.search-box{
+
+    padding:14px;
+
+}
+
+.search-box input{
+
+    height:42px;
+
+    font-size:14px;
+
+}
+
+.section{
+
+    padding:0 14px;
+
+}
+
+.section h2{
+
+    font-size:22px;
+
+}
+
+}
+
+/* ===========================================
+   HERO BANNER
+=========================================== */
 
 .hero-slider{
 
-width:90%;
+    width:100%;
 
-max-width:1300px;
+    max-width:1300px;
 
-margin:35px auto;
+    margin:18px auto 28px;
+
+    padding:0 18px;
+
+}
+
+.hero-slider a{
+
+    display:block;
 
 }
 
 .hero-slider img{
 
-width:100%;
+    width:100%;
 
-aspect-ratio:1920/700;
+    aspect-ratio:16/7;
 
-object-fit:cover;
+    object-fit:cover;
 
-border-radius:25px;
+    border-radius:22px;
 
-display:block;
+    background:#181818;
 
-cursor:pointer;
+    box-shadow:0 12px 35px rgba(0,0,0,.45);
+
+    transition:transform .35s ease;
+
+}
+
+.hero-slider img:hover{
+
+    transform:scale(1.015);
+
+}
+
+
+/* Skeleton while image loads */
+
+.hero-slider img{
+
+    animation:bannerFade .35s ease;
+
+}
+
+@keyframes bannerFade{
+
+    from{
+
+        opacity:.2;
+
+        transform:scale(1.02);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/* ===========================================
+   MOBILE HERO
+=========================================== */
+
+@media(max-width:768px){
+
+.hero-slider{
+
+    padding:0 14px;
+
+    margin-top:14px;
+
+}
+
+.hero-slider img{
+
+    aspect-ratio:16/9;
+
+    border-radius:16px;
+
+}
+
+}
+
+
+/* ===========================================
+   TABLET
+=========================================== */
+
+@media(min-width:769px) and (max-width:1100px){
+
+.hero-slider img{
+
+    aspect-ratio:16/8;
+
+}
+
+}
+
+/* ===========================================
+   COMMON CARD
+=========================================== */
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:16px;
+
+}
+
+.card{
+
+    background:#111;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    transition:.28s ease;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.30);
+
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.45);
+
+}
+
+.card img{
+
+    width:100%;
+
+    aspect-ratio:2/3;
+
+    object-fit:cover;
+
+    background:#1a1a1a;
+
+}
+
+.card h3{
+
+    padding:12px;
+
+    font-size:15px;
+
+    text-align:center;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+
+
+/* ===========================================
+   TRENDING
+=========================================== */
+
+.trending-cards{
+
+    display:flex !important;
+
+    overflow-x:auto;
+
+    gap:16px;
+
+    padding-bottom:10px;
+
+    scroll-behavior:smooth;
+
+    scrollbar-width:none;
+
+}
+
+.trending-cards::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+.trending-cards .card{
+
+    min-width:165px;
+
+    max-width:165px;
+
+    flex-shrink:0;
+
+}
+
+
+
+/* ===========================================
+   CATEGORY BUTTONS
+=========================================== */
+
+.categories{
+
+    display:flex;
+
+    gap:12px;
+
+    overflow-x:auto;
+
+    padding-bottom:14px;
+
+    scrollbar-width:none;
+
+}
+
+.categories::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+.cat-btn{
+
+    flex-shrink:0;
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    background:#171717;
+
+    color:#fff;
+
+    border:1px solid #262626;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.cat-btn:hover{
+
+    background:#E50914;
+
+    border-color:#E50914;
+
+}
+
+.cat-btn.active{
+
+    background:#E50914;
+
+    border-color:#E50914;
+
+}
+
+
+
+/* ===========================================
+   CATEGORY DRAMA LIST
+=========================================== */
+
+#categoryCards{
+
+    display:flex;
+
+    overflow-x:auto;
+
+    gap:16px;
+
+    padding-top:18px;
+
+    scroll-behavior:smooth;
+
+    scrollbar-width:none;
+
+}
+
+#categoryCards::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+#categoryCards .card{
+
+    min-width:180px;
+
+    max-width:180px;
+
+    flex-shrink:0;
+
+}
+
+
+
+/* ===========================================
+   MOBILE
+=========================================== */
+
+@media(max-width:768px){
+
+.cards{
+
+    gap:14px;
+
+}
+
+.card h3{
+
+    font-size:13px;
+
+}
+
+.trending-cards .card{
+
+    min-width:150px;
+
+    max-width:150px;
+
+}
+
+#categoryCards .card{
+
+    min-width:150px;
+
+    max-width:150px;
+
+}
+
+.cat-btn{
+
+    font-size:13px;
+
+    padding:9px 15px;
+
+}
+
+}
+
+/* ===========================================
+   LATEST UPLOADS
+=========================================== */
+
+#latestCards{
+
+    margin-top:18px;
+
+}
+
+#allCards{
+
+    margin-top:18px;
+
+}
+
+.watch-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:linear-gradient(90deg,#E50914,#ff4242);
+
+    color:#fff;
+
+    padding:14px 32px;
+
+    border-radius:999px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    transition:.30s;
+
+    box-shadow:0 8px 25px rgba(229,9,20,.30);
+
+}
+
+.watch-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 12px 30px rgba(229,9,20,.45);
+
+}
+
+.watch-btn:active{
+
+    transform:scale(.96);
+
+}
+
+
+
+/* ===========================================
+   DOWNLOAD APP CARD
+=========================================== */
+
+.app-card{
+
+    width:100%;
+
+    max-width:1300px;
+
+    margin:60px auto;
+
+    padding:0 18px;
+
+}
+
+.app-left{
+
+    background:linear-gradient(135deg,#111,#191919);
+
+    border-radius:22px;
+
+    padding:40px;
+
+    text-align:center;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.35);
+
+}
+
+.app-left h2{
+
+    font-size:34px;
+
+    margin-bottom:16px;
+
+}
+
+.app-left p{
+
+    color:#bdbdbd;
+
+    line-height:1.8;
+
+    max-width:650px;
+
+    margin:auto;
+
+    margin-bottom:28px;
+
+}
+
+
+
+/* ===========================================
+   FOOTER
+=========================================== */
+
+.footer{
+
+    margin-top:70px;
+
+    background:#0b0b0b;
+
+    border-top:1px solid #181818;
+
+    padding:45px 18px;
+
+    text-align:center;
+
+}
+
+.footer-logo{
+
+    width:140px;
+
+    margin:auto;
+
+    margin-bottom:20px;
+
+}
+
+.footer-links{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:18px;
+
+    margin-bottom:18px;
+
+}
+
+.footer-links a{
+
+    color:#9d9d9d;
+
+    font-size:14px;
+
+    transition:.25s;
+
+}
+
+.footer-links a:hover{
+
+    color:#E50914;
+
+}
+
+.footer p{
+
+    color:#666;
+
+    font-size:13px;
+
+}
+
+
+
+/* ===========================================
+   MOBILE
+=========================================== */
+
+@media(max-width:768px){
+
+.watch-btn{
+
+    width:100%;
+
+    padding:13px;
+
+    font-size:14px;
+
+}
+
+.app-card{
+
+    padding:0 14px;
+
+}
+
+.app-left{
+
+    padding:28px 20px;
+
+}
+
+.app-left h2{
+
+    font-size:25px;
+
+}
+
+.app-left p{
+
+    font-size:14px;
+
+}
+
+.footer-logo{
+
+    width:110px;
+
+}
+
+.footer-links{
+
+    gap:12px;
+
+}
+
+.footer-links a{
+
+    font-size:13px;
+
+}
+
+}
+
+/* ===========================================
+   STORYBYTE FINAL EFFECTS
+=========================================== */
+
+/* Smooth Fade */
+
+.fade-in{
+
+    animation:fadeIn .45s ease;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/* Card Hover */
+
+.card img{
+
+    transition:
+        transform .35s ease,
+        filter .35s ease;
+
+}
+
+.card:hover img{
+
+    transform:scale(1.04);
+
+}
+
+
+/* Banner Hover */
+
+.hero-slider img{
+
+    transition:
+        transform .45s ease;
+
+}
+
+.hero-slider:hover img{
+
+    transform:scale(1.02);
+
+}
+
+
+/* Button Click */
+
+.watch-btn:active,
+.app-btn:active,
+.cat-btn:active{
+
+    transform:scale(.96);
+
+}
+
+
+/* ===========================================
+   IMAGE LOADING
+=========================================== */
+
+img{
+
+    opacity:0;
+
+    transition:opacity .35s ease;
+
+}
+
+img.loaded{
+
+    opacity:1;
+
+}
+
+
+/* ===========================================
+   SKELETON
+=========================================== */
+
+.skeleton{
+
+    background:linear-gradient(
+        90deg,
+        #1b1b1b,
+        #2b2b2b,
+        #1b1b1b
+    );
+
+    background-size:300% 100%;
+
+    animation:skeleton 1.3s infinite;
+
+}
+
+@keyframes skeleton{
+
+    from{
+
+        background-position:300% 0;
+
+    }
+
+    to{
+
+        background-position:-300% 0;
+
+    }
+
+}
+
+
+/* ===========================================
+   SPLASH SCREEN
+=========================================== */
+
+#splash{
+
+    position:fixed;
+
+    inset:0;
+
+    background:#000;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:999999;
+
+    transition:.45s;
+
+}
+
+#splash img{
+
+    width:140px;
+
+    opacity:1;
+
+    animation:logoPulse 1.4s infinite;
+
+}
+
+#splash p{
+
+    margin-top:18px;
+
+    color:#aaa;
+
+    font-size:15px;
+
+}
+
+@keyframes logoPulse{
+
+    0%{
+
+        transform:scale(.95);
+
+    }
+
+    50%{
+
+        transform:scale(1.05);
+
+    }
+
+    100%{
+
+        transform:scale(.95);
+
+    }
+
+}
+
+
+/* ===========================================
+   PERFORMANCE
+=========================================== */
+
+.card,
+.hero-slider img,
+.watch-btn,
+.app-btn{
+
+    will-change:transform;
+
+}
+
+.card img{
+
+    backface-visibility:hidden;
+
+}
+
+html{
+
+    text-size-adjust:100%;
+
+}
+
+/* ==========================================
+   STORYBYTE PLAYER
+========================================== */
+
+.player-section{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.player-section .plyr{
+
+    width:100% !important;
+
+    max-width:420px !important;
+
+    aspect-ratio:9/16 !important;
+
+    background:#000;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+}
+
+.player-section .plyr video{
+
+    width:100% !important;
+
+    height:100% !important;
+
+    object-fit:contain !important;
+
+}
+
+.player-section .plyr__video-wrapper{
+
+    width:100%;
+
+    height:100%;
+
+    aspect-ratio:9/16;
+
+}
+
+.player-section video{
+
+    width:100%;
+
+    height:100%;
 
 }
 
 @media(max-width:768px){
 
-}
+.player-section .plyr{
 
-/* Trending */
-
-.trending-cards .card{
-
-flex:0 0 180px;
+    max-width:100% !important;
 
 }
 
-/* Latest + Related */
+}
 
-.cards:not(.trending-cards){
+/* ==========================================
+   PLYR THEME - STORYBYTE
+========================================== */
 
-display:grid;
+:root{
 
-grid-template-columns:repeat(2,1fr);
-
-gap:14px;
+    --plyr-color-main:#E50914;
 
 }
 
-/* Posters */
+/* Control Bar */
 
-.card img{
+.plyr--video .plyr__controls{
 
-width:100%;
+    background:rgba(10,10,10,.92);
 
-aspect-ratio:2/3;
-
-object-fit:cover;
+    backdrop-filter:blur(10px);
 
 }
 
-/* Banner */
+/* Buttons */
 
-.hero-slider img{
+.plyr__control{
 
-aspect-ratio:1920/700;
-
-border-radius:18px;
+    transition:.25s;
 
 }
 
-/* Plyr ka color red set karne ke liye */
+.plyr__control:hover{
 
-:root {
-    --plyr-color-main: #E50914; 
+    background:#E50914 !important;
+
 }
 
+/* Progress Bar */
 
-a, a:visited, a:hover, a:active {
-    color: inherit;
-    text-decoration: none;
-    outline: none;
+.plyr__progress__buffer{
+
+    color:#333;
+
 }
 
-.player-section{
-max-width:400px;
-margin:0 auto;
-aspect-ratio: 9 / 16;
+.plyr--full-ui input[type=range]{
+
+    color:#E50914;
+
 }
 
-#player{
-width:100%;
-height:100%;
+/* Volume */
+
+.plyr__volume input[type=range]{
+
+    color:#E50914;
+
 }
 
-.plyr{
-border-radius:12px;
-overflow:hidden;
+/* Menu */
+
+.plyr__menu__container{
+
+    background:#151515 !important;
+
+    border:1px solid #2a2a2a;
+
+    border-radius:12px;
+
 }
 
-/* --- Mobile Polish Fixes --- */
+.plyr__menu__container .plyr__control:hover{
 
-/* 1. Trending Section ko App jaisa Horizontal Scroll dena */
-.trending-cards {
-    display: flex !important;
-    overflow-x: auto !important;
-    gap: 15px !important;
-    padding: 10px 15px !important;
-    scrollbar-width: none !important; /* Hide scrollbar */
+    background:#E50914 !important;
+
 }
 
-/* 2. Cards ko mobile par behtar dikhane ke liye */
-@media (max-width: 768px) {
-    .cards {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* 2-2 ka grid */
-        gap: 14px !important;
-        padding: 0 15px !important;
-    }
+/* Big Play Button */
 
-    .card {
-        width: 100% !important;
-        height: auto !important;
-    }
+.plyr__control--overlaid{
 
-    .card img {
-        aspect-ratio: 2/3 !important; /* Poster ka sahi ratio */
-        object-fit: cover !important;
-    }
+    background:#E50914 !important;
+
+    border:none;
+
+    box-shadow:0 10px 30px rgba(229,9,20,.45);
+
 }
+
+.plyr__control--overlaid:hover{
+
+    transform:scale(1.08);
+
+}
+
+/* ==========================================
+   STORYBYTE ACTION BUTTONS
+========================================== */
+
+.video-actions{
+
+    width:100%;
+
+    max-width:900px;
+
+    margin:28px auto;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:16px;
+
+    flex-wrap:wrap;
+
+    padding:0 16px;
+
+}
+
+.action-btn{
+
+    flex:1;
+
+    max-width:220px;
+
+    min-width:170px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#171717;
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s ease;
+
+    box-shadow:0 6px 16px rgba(0,0,0,.25);
+
+}
+
+.action-btn:hover{
+
+    background:#E50914;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 12px 24px rgba(229,9,20,.35);
+
+}
+
+.action-btn:active{
+
+    transform:scale(.97);
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.video-actions{
+
+    gap:10px;
+
+    padding:0 12px;
+
+}
+
+.action-btn{
+
+    flex:1 1 calc(50% - 10px);
+
+    min-width:140px;
+
+    max-width:none;
+
+    height:48px;
+
+    font-size:14px;
+
+}
+
+}
+
+/* ==========================================
+   STORY BOX
+========================================== */
+
+.story-box{
+
+    width:100%;
+
+    max-width:900px;
+
+    margin:40px auto;
+
+    background:#121212;
+
+    border:1px solid #222;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.30);
+
+    transition:.30s ease;
+
+}
+
+.story-box:hover{
+
+    border-color:#303030;
+
+    transform:translateY(-2px);
+
+}
+
+.story-box h2{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+    color:#fff;
+
+}
+
+.story-box p{
+
+    font-size:16px;
+
+    line-height:1.9;
+
+    color:#bdbdbd;
+
+    word-break:break-word;
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.story-box{
+
+    margin:28px 14px;
+
+    padding:22px;
+
+    border-radius:16px;
+
+}
+
+.story-box h2{
+
+    font-size:28px;
+
+}
+
+.story-box p{
+
+    font-size:15px;
+
+    line-height:1.8;
+
+}
+
+}
+
+/* ==========================================
+   RELATED DRAMAS
+========================================== */
+
+.related-section{
+
+    width:100%;
+
+    max-width:1200px;
+
+    margin:50px auto;
+
+    padding:0 18px;
+
+}
+
+.related-section h2{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:22px;
+
+    color:#fff;
+
+}
+
+/* Horizontal Scroll */
+
+#relatedCards{
+
+    display:flex;
+
+    gap:18px;
+
+    overflow-x:auto;
+
+    overflow-y:hidden;
+
+    scroll-behavior:smooth;
+
+    -webkit-overflow-scrolling:touch;
+
+    scrollbar-width:none;
+
+    padding-bottom:10px;
+
+}
+
+#relatedCards::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+#relatedCards a{
+
+    text-decoration:none;
+
+    color:#fff;
+
+    flex-shrink:0;
+
+}
+
+/* Card */
+
+#relatedCards .card{
+
+    width:190px;
+
+    background:#121212;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    transition:.25s ease;
+
+    box-shadow:0 8px 22px rgba(0,0,0,.28);
+
+}
+
+#relatedCards .card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.45);
+
+}
+
+#relatedCards .card img{
+
+    width:100%;
+
+    aspect-ratio:2/3;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+#relatedCards .card h3{
+
+    padding:12px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.related-section{
+
+    padding:0 14px;
+
+}
+
+.related-section h2{
+
+    font-size:28px;
+
+}
+
+#relatedCards{
+
+    gap:14px;
+
+}
+
+#relatedCards .card{
+
+    width:145px;
+
+}
+
+#relatedCards .card h3{
+
+    font-size:13px;
+
+    padding:10px;
+
+}
+
+}
+
+/* ==========================================
+   DRAMA HERO
+========================================== */
+
+.drama-hero{
+
+    width:100%;
+
+    min-height:420px;
+
+    background:linear-gradient(
+        rgba(0,0,0,.55),
+        rgba(0,0,0,.88)
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    position:relative;
+
+    text-align:center;
+
+    padding:70px 20px 40px;
+
+    border-bottom:1px solid #1f1f1f;
+
+}
+
+.overlay-nav{
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 20px;
+
+    z-index:20;
+
+}
+
+.overlay-nav .logo{
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+.overlay-nav .logo img{
+
+    display:block !important;
+
+    height:60px !important;
+
+    width:auto !important;
+
+    max-width:none !important;
+
+}
+
+@media(max-width:768px){
+
+.overlay-nav .logo img{
+
+    height:44px;
+
+}
+
+}
+
+.drama-overlay{
+
+    width:100%;
+
+    max-width:900px;
+
+}
+
+.drama-overlay h1{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    color:#fff;
+
+    margin-bottom:18px;
+
+    text-shadow:0 4px 15px rgba(0,0,0,.45);
+
+}
+
+.drama-meta{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:14px;
+
+    color:#d0d0d0;
+
+    font-size:15px;
+
+    font-weight:500;
+
+}
+
+.drama-meta span{
+
+    background:#171717;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    border:1px solid #2a2a2a;
+
+}
+
+@media(max-width:768px){
+
+.drama-hero{
+
+    min-height:320px;
+
+    padding:80px 16px 30px;
+
+}
+
+.overlay-nav{
+
+    padding:14px;
+
+}
+
+.drama-overlay h1{
+
+    font-size:30px;
+
+    line-height:1.3;
+
+}
+
+.drama-meta{
+
+    gap:10px;
+
+    font-size:13px;
+
+}
+
+.drama-meta span{
+
+    padding:6px 12px;
+
+}
+
+}
+
