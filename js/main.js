@@ -142,33 +142,54 @@ async function loadTrending(){
 
     try{
 
-        const q=query(
-
+        const q = query(
             collection(db,"dramas"),
-
             orderBy("views","desc"),
-
             limit(5)
-
         );
 
-        const snapshot=await getDocs(q);
+        const snapshot = await getDocs(q);
 
-        const container=document.getElementById("trendingCards");
+        const container = document.getElementById("trendingCards");
 
         if(!container) return;
 
-        container.innerHTML="";
+        container.innerHTML = "";
+
+        let rank = 1;
 
         snapshot.forEach(doc=>{
 
-            const drama=doc.data();
+            const drama = doc.data();
 
-            container.innerHTML+=`
+            let badgeClass = "";
+            let badgeText = "";
+
+            if(rank===1){
+                badgeClass="gold";
+                badgeText="🥇 #1";
+            }
+            else if(rank===2){
+                badgeClass="silver";
+                badgeText="🥈 #2";
+            }
+            else if(rank===3){
+                badgeClass="bronze";
+                badgeText="🥉 #3";
+            }
+            else{
+                badgeText="#" + rank;
+            }
+
+            container.innerHTML += `
 
             <a href="${adRoute(`drama.html?id=${doc.id}`)}">
 
-                <div class="card fade-in">
+                <div class="card trending-card fade-in">
+
+                    <div class="rank-badge ${badgeClass}">
+                        ${badgeText}
+                    </div>
 
                     <img
                         loading="lazy"
@@ -180,6 +201,8 @@ async function loadTrending(){
             </a>
 
             `;
+
+            rank++;
 
         });
 
@@ -194,8 +217,6 @@ async function loadTrending(){
     }
 
 }
-
-
 
 // ======================================
 // LATEST

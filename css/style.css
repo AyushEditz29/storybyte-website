@@ -1839,3 +1839,550 @@ html{
 
 }
 
+/* ==========================================
+   CONTACT PAGE
+========================================== */
+
+.contact-page{
+
+    width:100%;
+    max-width:900px;
+
+    margin:60px auto;
+
+    padding:0 18px;
+
+    text-align:center;
+
+}
+
+.contact-page h1{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    margin-bottom:18px;
+
+    color:#fff;
+
+}
+
+.contact-sub{
+
+    max-width:700px;
+
+    margin:0 auto 40px;
+
+    color:#bdbdbd;
+
+    font-size:16px;
+
+    line-height:1.8;
+
+}
+
+.contact-card{
+
+    background:#121212;
+
+    border:1px solid #232323;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    margin-bottom:18px;
+
+    transition:.30s ease;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.28);
+
+}
+
+.contact-card:hover{
+
+    transform:translateY(-5px);
+
+    border-color:#E50914;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.40);
+
+}
+
+.contact-icon{
+
+    font-size:42px;
+
+    margin-bottom:14px;
+
+}
+
+.contact-card h3{
+
+    font-size:24px;
+
+    margin-bottom:10px;
+
+}
+
+.contact-card p{
+
+    color:#bdbdbd;
+
+    font-size:16px;
+
+    word-break:break-word;
+
+}
+
+.contact-page .watch-btn{
+
+    margin-top:25px;
+
+}
+
+@media(max-width:768px){
+
+.contact-page{
+
+    margin:40px auto;
+
+    padding:0 14px;
+
+}
+
+.contact-page h1{
+
+    font-size:34px;
+
+}
+
+.contact-sub{
+
+    font-size:14px;
+
+    margin-bottom:30px;
+
+}
+
+.contact-card{
+
+    padding:22px;
+
+}
+
+.contact-icon{
+
+    font-size:34px;
+
+}
+
+.contact-card h3{
+
+    font-size:20px;
+
+}
+
+.contact-card p{
+
+    font-size:14px;
+
+}
+
+.contact-page .watch-btn{
+
+    width:100%;
+
+}
+
+}
+
+/* ==========================================
+   POLICY + TERMS + DISCLAIMER PAGE
+========================================== */
+
+.policy-page{
+
+    width:100%;
+    max-width:950px;
+
+    margin:60px auto;
+
+    padding:0 18px;
+
+}
+
+.policy-page h1{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    text-align:center;
+
+    margin-bottom:22px;
+
+    color:#fff;
+
+}
+
+.policy-intro{
+
+    max-width:760px;
+
+    margin:0 auto 40px;
+
+    text-align:center;
+
+    color:#bdbdbd;
+
+    line-height:1.8;
+
+    font-size:16px;
+
+}
+
+.policy-card{
+
+    background:#121212;
+
+    border:1px solid #232323;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    margin-bottom:22px;
+
+    transition:.30s ease;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.28);
+
+}
+
+.policy-card:hover{
+
+    border-color:#E50914;
+
+    transform:translateY(-4px);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.40);
+
+}
+
+.policy-card h2{
+
+    font-size:24px;
+
+    margin-bottom:14px;
+
+    color:#fff;
+
+}
+
+.policy-card p{
+
+    color:#bdbdbd;
+
+    line-height:1.9;
+
+    font-size:15px;
+
+}
+
+.policy-card b{
+
+    color:#fff;
+
+}
+
+@media(max-width:768px){
+
+.policy-page{
+
+    margin:40px auto;
+
+    padding:0 14px;
+
+}
+
+.policy-page h1{
+
+    font-size:34px;
+
+}
+
+.policy-intro{
+
+    font-size:14px;
+
+    margin-bottom:30px;
+
+}
+
+.policy-card{
+
+    padding:22px;
+
+}
+
+.policy-card h2{
+
+    font-size:20px;
+
+}
+
+.policy-card p{
+
+    font-size:14px;
+
+}
+
+}
+
+/* ==========================================
+   DOWNLOAD PAGE
+========================================== */
+
+.download-page{
+
+    max-width:900px;
+
+    margin:60px auto;
+
+    padding:0 18px;
+
+    text-align:center;
+
+}
+
+.download-page h1{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    margin-bottom:18px;
+
+}
+
+.download-sub{
+
+    max-width:700px;
+
+    margin:0 auto 35px;
+
+    color:#bdbdbd;
+
+    line-height:1.8;
+
+}
+
+.download-features{
+
+    max-width:1200px;
+
+    margin:50px auto;
+
+    padding:0 18px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+}
+
+.download-card{
+
+    background:#121212;
+
+    border:1px solid #232323;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    text-align:center;
+
+    transition:.30s;
+
+}
+
+.download-card:hover{
+
+    transform:translateY(-5px);
+
+    border-color:#E50914;
+
+}
+
+.download-icon{
+
+    font-size:42px;
+
+    margin-bottom:14px;
+
+}
+
+.download-card h3{
+
+    margin-bottom:10px;
+
+}
+
+.download-card p{
+
+    color:#bdbdbd;
+
+    line-height:1.8;
+
+}
+
+.download-status{
+
+    max-width:900px;
+
+    margin:50px auto;
+
+    padding:35px;
+
+    background:#121212;
+
+    border-radius:18px;
+
+    border:1px solid #232323;
+
+    text-align:center;
+
+}
+
+.download-status h2{
+
+    margin-bottom:18px;
+
+}
+
+.download-status p{
+
+    color:#bdbdbd;
+
+    line-height:1.9;
+
+}
+
+@media(max-width:768px){
+
+.download-page{
+
+margin:40px auto;
+
+padding:0 14px;
+
+}
+
+.download-page h1{
+
+font-size:34px;
+
+}
+
+.download-features{
+
+grid-template-columns:1fr;
+
+padding:0 14px;
+
+}
+
+.download-card{
+
+padding:22px;
+
+}
+
+.download-status{
+
+margin:40px 14px;
+
+padding:24px;
+
+}
+
+}
+
+/* ==========================================
+   TRENDING RANK BADGE
+========================================== */
+
+.trending-card{
+
+    position:relative;
+
+}
+
+.rank-badge{
+
+    position:absolute;
+
+    top:12px;
+
+    left:12px;
+
+    padding:7px 13px;
+
+    border-radius:999px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#fff;
+
+    background:#E50914;
+
+    z-index:5;
+
+    box-shadow:0 5px 14px rgba(0,0,0,.35);
+
+}
+
+.rank-badge.gold{
+
+    background:#FFD700;
+
+    color:#111;
+
+}
+
+.rank-badge.silver{
+
+    background:#C0C0C0;
+
+    color:#111;
+
+}
+
+.rank-badge.bronze{
+
+    background:#CD7F32;
+
+}
+
+@media(max-width:768px){
+
+.rank-badge{
+
+    font-size:12px;
+
+    padding:6px 10px;
+
+    top:8px;
+
+    left:8px;
+
+}
+
+}
