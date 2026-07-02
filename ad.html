@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading Reward Content...</title>
     
-    <!-- 🌟 REAL AD INJECTION: Bina naya tab khole isi page par premium overlay ad dikhane ke liye -->
-    <script>(function(s){s.dataset.zone='11213927',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <!-- Plyr Engine CSS -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
 
     <style>
         body {
@@ -17,15 +17,18 @@
             font-family: Arial, sans-serif;
             overflow: hidden;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
             height: 100vh;
+            box-sizing: border-box;
+            padding: 10px;
         }
         .ad-player-container {
             position: relative;
             width: 100%;
-            max-width: 450px;
-            height: 90vh;
+            max-width: 400px;
+            height: 65vh; /* Video container ki height thodi kam ki taaki niche space bache */
             background: #111;
             border-radius: 12px;
             overflow: hidden;
@@ -34,16 +37,13 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
         }
         .ad-top-bar {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             box-sizing: border-box;
             background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
             display: flex;
@@ -83,18 +83,25 @@
             opacity: 1;
             box-shadow: 0 0 10px #ff4757;
         }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #ff4757;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+        #vastVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* 🌟 BANNER CONTAINER FIX: Jo download ad aa raha tha wo ab poora screen par dikhega */
+        .banner-holder {
+            width: 100%;
+            max-width: 400px;
+            height: 30vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            background: #121212;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
     </style>
 </head>
@@ -107,22 +114,50 @@
             <button id="closeAdBtn" class="close-btn" disabled>×</button>
         </div>
 
-        <div class="loader"></div>
-        <h2>Playing Rewarded Video Ad...</h2>
-        <p style="color: #aaa; font-size: 14px;">Do not close this page. Your reward is being generated.</p>
+        <!-- Real VAST Player -->
+        <video id="vastVideo" playsinline autoplay muted></video>
     </div>
 
+    <!-- Niche banner ad box -->
+    <div class="banner-holder">
+        <script>
+        (function(nti){
+        var d = document,
+            s = d.createElement('script'),
+            l = d.scripts[d.scripts.length - 1];
+        s.settings = nti || {};
+        s.src = "\/\/prizefamily.com\/bZXXV\/sUd.GhlA0CY\/W-cb\/ee\/mr9-uiZ\/UflfkUPPTncfxmOiDpgGz\/MUjUEvtKNvz\/Ej4NOuDQMOyxNHQv";
+        s.async = true;
+        s.referrerPolicy = 'no-referrer-when-downgrade';
+        l.parentNode.insertBefore(s, l);
+        })({})
+        </script>
+    </div>
+
+    <!-- Scripts For Engine Components -->
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    
     <script>
-        // Maine ad time 15 seconds kar diya hai taaki real video look aaye
         let timeLeft = 15; 
         const countdownEl = document.getElementById("countdown");
         const statusEl = document.getElementById("rewardStatus");
         const closeBtn = document.getElementById("closeAdBtn");
+        const videoEl = document.getElementById("vastVideo");
         
         const params = new URLSearchParams(window.location.search);
         const nextTarget = params.get("next");
 
-        // Page load hote hi bina kisi click ke automatic loop timer shuru
+        // HilltopAds VAST 3.0 Video Link Injection
+        videoEl.src = "https://nautical-hand.com/d.m/FUzXdtGxNqvMZMGNUR/geUmT9AunZ_UilRk/PjTlcnxCOJDfgPzaM/TBM/tjNrzPE/4WO/DiMexDNQwa";
+
+        // Initialize Player without controls to lock the user
+        const player = new Plyr('#vastVideo', {
+            controls: [],
+            clickToPlay: false,
+            keyboard: { global: false, focused: false }
+        });
+
+        // Loop Counter Logic
         const adTimer = setInterval(() => {
             timeLeft--;
             if (countdownEl) countdownEl.innerText = timeLeft;
@@ -130,12 +165,10 @@
             if (timeLeft <= 0) {
                 clearInterval(adTimer);
                 
-                // Reward Status changes to Granted
                 statusEl.innerHTML = "✓ Reward granted";
                 statusEl.style.background = "#4CAF50";
                 statusEl.style.borderColor = "#4CAF50";
                 
-                // Active the cross close switch
                 closeBtn.disabled = false;
                 closeBtn.classList.add("active");
             }
@@ -144,7 +177,6 @@
         closeBtn.onclick = () => {
             if (!closeBtn.classList.contains("active")) return;
             if (nextTarget) {
-                // User direct usi tab mein bina naye page par bhatke apne video par chala jayega
                 window.location.href = decodeURIComponent(nextTarget);
             }
         };

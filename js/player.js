@@ -175,19 +175,28 @@ async function loadRelatedDramas(category){
         snap.forEach(doc => {
             const drama = doc.data();
             if(drama.category === category && doc.id !== dramaId){
-                // Dynamic link generation for related dramas via ad.html
-                const targetDramaLink = `drama.html?id=${doc.id}`;
+               const targetDramaLink = `drama.html?id=${doc.id}`;
                 
                 relatedBox.innerHTML += `
-                    <a href="ad.html?next=${encodeURIComponent(targetDramaLink)}"> <!--[cite: 1] -->
+                    <a href="ad.html?next=${encodeURIComponent(targetDramaLink)}">
                         <div class="card">
-                            <img src="${drama.poster}">
+                            <img src="${drama.poster}" alt="${drama.title}">
                             <h3>${drama.title}</h3>
                         </div>
                     </a>
                 `;
             }
         });
+
+        document.querySelectorAll("#relatedCards img").forEach(img => {
+            if(img.complete){
+                img.classList.add("loaded");
+            }
+            img.onload = () => {
+                img.classList.add("loaded");
+            };
+        });
+        
     } catch (error) {
         console.error("Error loading related dramas:", error);
     }
