@@ -415,14 +415,19 @@ nav{
 
 .hero-slider img{
 
-    aspect-ratio:16/9;
+    width:100%;
+
+    height:auto;
+
+    aspect-ratio:auto;
+
+    object-fit:contain;
 
     border-radius:16px;
 
 }
 
 }
-
 
 /* ===========================================
    TABLET
@@ -1128,6 +1133,37 @@ img.loaded{
 
 }
 
+@media(max-width:768px){
+
+#splash{
+
+    padding:30px 20px;
+
+    box-sizing:border-box;
+
+}
+
+#splash img{
+
+    width:120px;
+
+}
+
+#splash p{
+
+    margin-top:16px;
+
+    font-size:13px;
+
+    line-height:1.6;
+
+    text-align:center;
+
+    padding:0 10px;
+
+}
+
+}
 
 /* ===========================================
    PERFORMANCE
@@ -1216,7 +1252,13 @@ html{
 
 @media(max-width:768px){
 
-.player-section .plyr{
+.player-section{
+
+    padding:0 12px;
+
+}
+
+    .player-section .plyr{
 
     max-width:100% !important;
 
@@ -1402,15 +1444,11 @@ html{
 
 .action-btn{
 
-    flex:1 1 calc(50% - 10px);
+    flex:1 1 calc(50% - 8px);
 
-    min-width:140px;
+    min-width:0;
 
-    max-width:none;
-
-    height:48px;
-
-    font-size:14px;
+    max-width:calc(50% - 8px);
 
 }
 
@@ -1480,11 +1518,17 @@ html{
 
 .story-box{
 
-    margin:28px 14px;
+    width:calc(100% - 28px);
 
-    padding:22px;
+    max-width:100%;
+
+    margin:28px auto;
+
+    padding:22px 16px;
 
     border-radius:16px;
+
+    overflow:hidden;
 
 }
 
@@ -2314,6 +2358,7 @@ padding:24px;
 }
 
 /* ==========================================
+
    TRENDING RANK BADGE
 ========================================== */
 
