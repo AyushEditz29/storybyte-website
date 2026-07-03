@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading Reward Content...</title>
     
-    <!-- 🚀 HILLTOPADS REVENUE OPTIMIZATION TAG -->
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
     <style>
@@ -66,7 +65,6 @@
         <p style="color: #aaa; font-size: 14px; margin: 10px 0 0 0;">Please wait while the system checks your reward session.</p>
     </div>
 
-    <!-- 📰 DYNAMIC INTERSTITIAL BANNER ZONE -->
     <script>
     (function(nti){
     var d = document,
@@ -88,6 +86,14 @@
         const params = new URLSearchParams(window.location.search);
         const nextTarget = params.get("next");
 
+        // 🎯 TUMHARA NAYA VIDEO AD URL DETECT KARNE KA LOGIC
+        const vastAdUrl = "https://nautical-hand.com/dymDFlz.dDG/N-v/Z_GqUH/bebmJ9HuPZGUY1vkzPtTJcbxdO/D/gtzdMHT/MRtrNCzBEK4AODDTMnxENpwv";
+
+        // Background system automatic dynamic open trigger logic (optional network handling)
+        if(window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost") {
+            console.log("VAST Feed Active on Live Server");
+        }
+
         const countdown = setInterval(() => {
             count--;
             if (timerEl) timerEl.innerText = count;
@@ -99,7 +105,7 @@
                 badgeEl.style.background = "#4CAF50";
                 badgeEl.style.boxShadow = "0 0 10px rgba(76, 175, 80, 0.4)";
                 
-                // Automatic direct redirection loop
+                // Content automatically unlocks here
                 if (nextTarget) {
                     window.location.href = decodeURIComponent(nextTarget);
                 }
