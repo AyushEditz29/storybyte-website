@@ -61,6 +61,37 @@ async function loadDrama(){
             }
 
             // ====================
+// Dynamic SEO
+// ====================
+
+document.title = `${data.title} | StoryByte`;
+
+document.querySelector('meta[name="description"]')?.setAttribute(
+    "content",
+    data.description
+);
+
+document.querySelector('meta[property="og:title"]')?.setAttribute(
+    "content",
+    data.title
+);
+
+document.querySelector('meta[property="og:description"]')?.setAttribute(
+    "content",
+    data.description
+);
+
+document.querySelector('meta[property="og:image"]')?.setAttribute(
+    "content",
+    data.poster
+);
+
+document.querySelector('link[rel="canonical"]')?.setAttribute(
+    "href",
+    window.location.href
+);
+
+            // ====================
             // 🎯 DOWNLOAD BUTTON HANDLER 
             // ====================
             const downloadBtn = document.getElementById("downloadBtn");
