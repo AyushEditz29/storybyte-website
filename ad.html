@@ -192,19 +192,31 @@ s
 
 </div>
 
-<!-- Adsterra Social Bar -->
-<script src="https://pl30322150.effectivecpmnetwork.com/ac/1b/ae/ac1bae48f45f6c7ec1f7a9588835e87c.js"></script>
-
 <script>
 
-const params = new URLSearchParams(window.location.search);
+// Social Bar background me load hogi
+window.addEventListener("load", () => {
 
+    setTimeout(() => {
+
+        const s = document.createElement("script");
+
+        s.src = "https://pl30322150.effectivecpmnetwork.com/ac/1b/ae/ac1bae48f45f6c7ec1f7a9588835e87c.js";
+
+        s.async = true;
+
+        document.body.appendChild(s);
+
+    }, 500);
+
+});
+
+const params = new URLSearchParams(window.location.search);
 const next = params.get("next");
 
 let sec = 10;
 
 const count = document.getElementById("count");
-
 const bar = document.getElementById("bar");
 
 const timer = setInterval(() => {
@@ -215,19 +227,17 @@ const timer = setInterval(() => {
 
     bar.style.width = ((10 - sec) * 10) + "%";
 
-    if(sec <= 0){
+    if (sec <= 0) {
 
         clearInterval(timer);
 
-        if(next){
-
+        if (next) {
             window.location.href = decodeURIComponent(next);
-
         }
 
     }
 
-},1000);
+}, 1000);
 
 </script>
 
