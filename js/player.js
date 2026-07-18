@@ -108,8 +108,10 @@ document.querySelector('link[rel="canonical"]')?.setAttribute(
 const workerDownload =
 `https://storybyte-adminbot.storybyte029.workers.dev/?action=download&videoUrl=${encodeURIComponent(directMp4Url)}`;
 
+const backUrl = window.location.href;
+
 window.location.href =
-`ad.html?next=${encodeURIComponent(workerDownload)}`;
+`ad.html?type=download&back=${encodeURIComponent(backUrl)}&next=${encodeURIComponent(workerDownload)}`;
                         console.log("Redirecting to Ad page for 1080p download loop...");
                     }
                 });

@@ -213,6 +213,8 @@ window.addEventListener("load", () => {
 
 const params = new URLSearchParams(window.location.search);
 const next = params.get("next");
+const type = params.get("type");
+const back = params.get("back");
 
 let sec = 10;
 
@@ -231,9 +233,28 @@ const timer = setInterval(() => {
 
         clearInterval(timer);
 
-        if (next) {
-            window.location.href = decodeURIComponent(next);
-        }
+        if(next){
+
+    if(type === "download"){
+
+        // Hidden tab me download start
+        window.open(decodeURIComponent(next), "_blank");
+
+        // 2 second baad drama page par wapas
+        setTimeout(()=>{
+
+            window.location.href = decodeURIComponent(back);
+
+        },2000);
+
+    }else{
+
+        // Normal flow
+        window.location.href = decodeURIComponent(next);
+
+    }
+
+}
 
     }
 
