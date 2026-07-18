@@ -100,12 +100,16 @@ document.querySelector('link[rel="canonical"]')?.setAttribute(
                     e.preventDefault();
                     
                     if (videoSource && videoSource.includes("playlist.m3u8")) {
-                        // 1080p direct video link setup
-                        const directMp4Url = videoSource.replace("playlist.m3u8", "play_1080p.mp4");
-                        
-                        // User ko direct download link ke sath ad page timer par bhej dega
-                        window.location.href = `ad.html?next=${encodeURIComponent(directMp4Url)}`; //[cite: 1]
-                        
+                        const directMp4Url = videoSource.replace(
+    "playlist.m3u8",
+    "play_1080p.mp4"
+);
+
+const workerDownload =
+`https://storybyte-adminbot.storybyte029.workers.dev/?action=download&videoUrl=${encodeURIComponent(directMp4Url)}`;
+
+window.location.href =
+`ad.html?next=${encodeURIComponent(workerDownload)}`;
                         console.log("Redirecting to Ad page for 1080p download loop...");
                     }
                 });
