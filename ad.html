@@ -193,22 +193,14 @@ s
 </div>
 
 <script>
-
 // Social Bar background me load hogi
 window.addEventListener("load", () => {
-
     setTimeout(() => {
-
         const s = document.createElement("script");
-
         s.src = "https://pl30322150.effectivecpmnetwork.com/ac/1b/ae/ac1bae48f45f6c7ec1f7a9588835e87c.js";
-
         s.async = true;
-
         document.body.appendChild(s);
-
     }, 500);
-
 });
 
 const params = new URLSearchParams(window.location.search);
@@ -233,34 +225,34 @@ const timer = setInterval(() => {
 
         clearInterval(timer);
 
-        if(next){
+        if (next) {
 
-    if(type === "download"){
+            if (type === "download") {
 
-        // Hidden tab me download start
-        window.open(decodeURIComponent(next), "_blank");
+                const iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = decodeURIComponent(next);
+                document.body.appendChild(iframe);
 
-        // 2 second baad drama page par wapas
-        setTimeout(()=>{
+                if (back) {
+                    setTimeout(() => {
+                        window.location.href = decodeURIComponent(back);
+                    }, 2000);
+                }
 
-            window.location.href = decodeURIComponent(back);
+            } else {
 
-        },2000);
+                window.location.href = decodeURIComponent(next);
 
-    }else{
+            }
 
-        // Normal flow
-        window.location.href = decodeURIComponent(next);
-
-    }
-
-}
+        }
 
     }
 
 }, 1000);
-
 </script>
+
 
 </body>
 
